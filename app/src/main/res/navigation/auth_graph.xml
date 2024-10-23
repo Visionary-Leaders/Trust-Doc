@@ -9,5 +9,5 @@
         android:id="@+id/loginPage2"
         android:name="com.trustio.importantdocuments.ui.screens.auth.LoginPage"
         android:label="login_page"
-        tools:layout="@layout/register_page" />
+        tools:layout="@layout/login_page" />
 </navigation>
