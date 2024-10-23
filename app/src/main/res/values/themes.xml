@@ -17,6 +17,7 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
+
     <style name="Theme.Main" parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- Primary brand color. -->

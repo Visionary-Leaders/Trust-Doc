@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_graph"
+    app:startDestination="@id/loginPage2">
+
+    <fragment
+        android:id="@+id/loginPage2"
+        android:name="com.trustio.importantdocuments.ui.screens.auth.LoginPage"
+        android:label="login_page"
+        tools:layout="@layout/register_page" />
+</navigation>

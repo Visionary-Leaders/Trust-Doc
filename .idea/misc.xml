@@ -3,7 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/drawable-v24/bg_edit.xml" value="0.255" />
+        <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/drawable-v24/bg_lin.xml" value="0.255" />
+        <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/drawable-v24/bg_password_correct.xml" value="0.255" />
+        <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/drawable-v24/bg_password_current.xml" value="0.255" />
+        <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/drawable-v24/bg_viewpager_top.xml" value="0.255" />
+        <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/layout/activity_auth.xml" value="0.321875" />
         <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/layout/activity_main.xml" value="0.321875" />
+        <entry key="..\:/AndroidStudioProjects/ImportantDocuments/app/src/main/res/layout/login_page.xml" value="0.321875" />
       </map>
     </option>
   </component>

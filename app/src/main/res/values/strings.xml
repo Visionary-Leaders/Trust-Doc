@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">Important Documents</string>
+    <string name="register">Registration</string>
+    <string name="_998" >+998-##-###-##-##</string>
+
+    <string name="continue1">Continue</string>
+    <string name="login">Login</string>
+    <string name="confirm_otp">passwordConfirmation</string>
+    <string name="welcome_txt">Welcome\n to the application</string>
+    <string name="auth_txt">Authorization</string>
+    <string name="forgot_password">Forgot Your Password?</string>
+    <string name="password">Password</string>
+    <string name="info_pass1">At Least 6 Characters</string>
+    <string name="info_pass2">Minimum 3 Letters</string>
+    <string name="info_pass3">Minimum 3 Digits</string>
+    <string name="register_info">If you are already registered,\n you can simply Login to the application</string>
+    <string name="info_pass4">At least one capital letter</string>
+    <string name="rewrite_pass">Repeat password</string>
+    <string name="next">Next</string>
+    <string name="enter_code">Write the code</string>
+    <string name="info_otp">Your confirmation code has been sent to +998935990005..</string>
+    <string name="time">Left</string>
+    <string name="checkOtp">Confirm</string>
+    <string name="underlin_txt"><u>Click here..</u>.</string>
+    <string name="dont_have_code">If the code did not arrive,</string>
+    <string name="success_verify">Registration was successful !</string>
 </resources>
