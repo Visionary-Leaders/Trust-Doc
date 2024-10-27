@@ -152,7 +152,6 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/_44sdp"
         android:layout_marginLeft="@dimen/_28sdp"
-        android:enabled="false"
         android:layout_marginTop="@dimen/_24sdp"
         android:layout_marginRight="@dimen/_44sdp"
         android:fontFamily="@font/montserrat_semibold"

@@ -87,7 +87,7 @@ class AuthRepositoryImpl @Inject constructor(
                 Result.success(it)
             } ?: Result.failure(Exception("Empty response body"))
 
-            else -> Result.failure(parseError(response.errorBody()?.string()))
+            else -> Result.failure(parseLoginErr(response.errorBody()?.string()))
 
         }
     }
@@ -110,6 +110,14 @@ class AuthRepositoryImpl @Inject constructor(
             Gson().fromJson(it, ErrorResponse::class.java)
         }
         val errorMessage = errorResponse?.email?.firstOrNull() ?: "Unknown error"
+        return Exception(errorMessage)
+    }
+
+    private fun parseLoginErr(errorBody: String?): Exception {
+        val errorResponse = errorBody?.let {
+            Gson().fromJson(it, RegisterResponse::class.java)
+        }
+        val errorMessage = errorResponse?.message ?: "Unknown error"
         return Exception(errorMessage)
     }
 
