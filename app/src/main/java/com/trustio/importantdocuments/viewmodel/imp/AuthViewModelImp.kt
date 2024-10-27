@@ -3,6 +3,9 @@ package com.trustio.importantdocuments.viewmodel.imp
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.Zbekz.tashkentmetro.utils.enums.CurrentScreenEnum
+import com.trustio.importantdocuments.data.local.shp.AppReference
+import com.trustio.importantdocuments.data.remote.request.LoginRequest
 import com.trustio.importantdocuments.data.remote.request.RegisterRequest
 import com.trustio.importantdocuments.data.remote.response.RegisterResponse
 import com.trustio.importantdocuments.repository.AuthRepository
@@ -16,13 +19,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModelImp @Inject constructor(val repo:AuthRepository):AuthViewModel ,ViewModel(){
+class AuthViewModelImp @Inject constructor(val repo:AuthRepository,val appReference: AppReference):AuthViewModel ,ViewModel(){
     private val _smsState = MutableStateFlow<Result<String>?>(null)
     override val smsState: StateFlow<Result<String>?> = _smsState
     private  val _confirmOtpFake = MutableStateFlow<Result<String>?>(null)
     override val confirmOtpFake: StateFlow<Result<String>?>  = _confirmOtpFake
     private val _registerResponse = MutableStateFlow<Result<RegisterResponse>?>(null)
     override val registerResponse: StateFlow<Result<RegisterResponse>?> =_registerResponse
+    private val _loginResponse = MutableStateFlow<Result<RegisterResponse>?>(null)
+    override val loginResponse: StateFlow<Result<RegisterResponse>?> =_loginResponse
 
     override fun sendSms(phoneNumber: String, activity: Activity) {
         viewModelScope.launch {
@@ -48,12 +53,27 @@ class AuthViewModelImp @Inject constructor(val repo:AuthRepository):AuthViewMode
     override fun registerUser(registerRequest: RegisterRequest) {
         repo.registerUser(registerRequest).onEach {
             it.onSuccess {
+                appReference.currentScreenEnum = CurrentScreenEnum.HOME
                 _registerResponse.value = Result.success(it)
             }
             it.onFailure {
                 _registerResponse.value = Result.failure(it)
             }
         }.launchIn(viewModelScope)
+    }
+
+    override fun loginUser(loginRequest: LoginRequest) {
+        repo
+            .loginUser(loginRequest).onEach {
+                it.onSuccess {
+                    appReference.currentScreenEnum =CurrentScreenEnum.HOME
+                    _loginResponse.value = Result.success(it)
+
+                }
+                it.onFailure {
+                    _loginResponse.value = Result.failure(it)
+                }
+            }
     }
 
 }

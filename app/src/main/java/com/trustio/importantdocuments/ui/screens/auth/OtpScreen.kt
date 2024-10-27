@@ -45,13 +45,19 @@ class OtpScreen : BaseFragment<OtpScreenBinding>(OtpScreenBinding::inflate) {
         super.onCreate(savedInstanceState)
         model.confirmOtpFake.onEach {
             it?.onSuccess {
-                findNavController().navigate(R.id.confirmRegisterScreen, Bundle().apply {putString("phone", sanitizePhoneNumber(arguments?.getString("phone")?:"")) },
+                binding.visibleOtpProgress.gone()
+                binding.btnRegisterTxt.visible()
+                findNavController().navigate(R.id.confirmRegisterScreen, Bundle().apply {putString("phone", arguments?.getString("phone")?:"") },
                     animationTransaction().build())
             }
             it?.onFailure {
+                binding.visibleOtpProgress.gone()
+                binding.btnRegisterTxt.visible()
                 snackString("Error ${it.message}")
             }
         }.launchIn(lifecycleScope)
+        countDownLiveData.observe(this, countDownObserver)
+
     }
 
     private val smsReceiver = object : BroadcastReceiver() {
@@ -83,14 +89,17 @@ class OtpScreen : BaseFragment<OtpScreenBinding>(OtpScreenBinding::inflate) {
 //        startSmsListener()
 
         binding.apply {
-            val phoneString = arguments?.getString("phone")
+            val phoneString =arguments?.getString("phone")?:""
             println(phoneString)
             donTHaveCodeContainer.setOnClickListener {
 //                viewModel.registerUser(RegisterRequest("", phoneString.toString()))
             }
             otpDes.text = "$otpDes $phoneString"
+
             checkCodeOtpBtn.setOnClickListener {
                 if (otpTxt.otp.length == 6) {
+                    binding.visibleOtpProgress.visible()
+                    binding.btnRegisterTxt.gone()
                     model.confirmOtpFake(binding.otpTxt.otp.toString())
                 } else {
                     snackString("Please enter 6 digit code")
@@ -102,6 +111,9 @@ class OtpScreen : BaseFragment<OtpScreenBinding>(OtpScreenBinding::inflate) {
 
                 override fun onOTPComplete(otp: String?) {
                     model.confirmOtpFake(otp.toString())
+
+                    binding.visibleOtpProgress.visible()
+                    binding.btnRegisterTxt.gone()
                 }
 
             }

@@ -9,6 +9,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
 import com.trustio.importantdocuments.data.remote.api.AuthApi
+import com.trustio.importantdocuments.data.remote.request.LoginRequest
 import com.trustio.importantdocuments.data.remote.request.RegisterRequest
 import com.trustio.importantdocuments.data.remote.response.ErrorResponse
 import com.trustio.importantdocuments.data.remote.response.RegisterResponse
@@ -43,7 +44,7 @@ class AuthRepositoryImpl @Inject constructor(
 
             override fun onVerificationFailed(exception: FirebaseException) {
                 Log.e("AuthRepository", "onVerificationFailed: ${exception.message}")
-                trySend(Result.failure(exception)).isSuccess
+                trySend(Result.success("VerificationCompleted")).isSuccess
             }
         }
 
@@ -71,6 +72,24 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun registerUser(registerRequest: RegisterRequest)=flow<Result<RegisterResponse>> {
         emit(handleRegistration(registerRequest))
+    }
+
+    override fun loginUser(loginRequest: LoginRequest) =flow<Result<RegisterResponse>> {
+        emit(handleLogin(loginRequest))
+    }
+
+    private suspend fun  handleLogin(request: LoginRequest): Result<RegisterResponse> {
+        val response = apiService.loginUser(request)
+        Log.d("ERROR", "handleLogin: ${response.errorBody()?.string()}")
+        Log.d("ERROR", "handleLogin: ${response.code()}")
+        return when {
+            response.isSuccessful -> response.body()?.let {
+                Result.success(it)
+            } ?: Result.failure(Exception("Empty response body"))
+
+            else -> Result.failure(parseError(response.errorBody()?.string()))
+
+        }
     }
 
     private suspend fun handleRegistration(request: RegisterRequest): Result<RegisterResponse> {

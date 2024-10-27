@@ -13,9 +13,11 @@ import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.databinding.RegisterPageBinding
 import com.trustio.importantdocuments.utils.BaseFragment
 import com.trustio.importantdocuments.utils.animationTransaction
+import com.trustio.importantdocuments.utils.gone
 import com.trustio.importantdocuments.utils.isValidPhoneNumber
 import com.trustio.importantdocuments.utils.sanitizePhoneNumber
 import com.trustio.importantdocuments.utils.snackString
+import com.trustio.importantdocuments.utils.visible
 import com.trustio.importantdocuments.viewmodel.imp.AuthViewModelImp
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,10 +31,14 @@ class RegisterScreen : BaseFragment<RegisterPageBinding>(RegisterPageBinding::in
             model.smsState.collect { result ->
                 result?.let {
                     if (it.isSuccess) {
-                      snackString("Sms Sent")
+                        binding.registerProgress.gone()
+                        binding.clickRegister.text=requireContext().getString(R.string.continue1)
+                        snackString("Sms Sent")
                         val phone = sanitizePhoneNumber(binding.phoneRegister.text.toString())
                         findNavController().navigate(R.id.otpScreen, Bundle().apply { putString("phone", phone) }, animationTransaction().build())
                     } else {
+
+                        binding.clickRegister.text=requireContext().getString(R.string.continue1)
                         snackString("Error ${it.exceptionOrNull()}")
                     }
                 }
@@ -50,6 +56,8 @@ class RegisterScreen : BaseFragment<RegisterPageBinding>(RegisterPageBinding::in
             findNavController().popBackStack()
         }
         binding.clickRegister.setOnClickListener {
+            binding.registerProgress.visible()
+            binding.clickRegister.text=""
             model.sendSms(binding.phoneRegister.text.toString(), requireActivity())
 
         }
