@@ -73,7 +73,7 @@ class AuthViewModelImp @Inject constructor(val repo:AuthRepository,val appRefere
                 it.onFailure {
                     _loginResponse.value = Result.failure(it)
                 }
-            }
+            }.launchIn(viewModelScope)
     }
 
 }

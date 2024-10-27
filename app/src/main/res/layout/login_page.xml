@@ -91,6 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/_998"
+
                 android:inputType="phone"
                 android:textColor="@color/white_and_black"
                 android:textColorHint="#787171"
@@ -151,6 +152,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/_44sdp"
         android:layout_marginLeft="@dimen/_28sdp"
+        android:enabled="false"
         android:layout_marginTop="@dimen/_24sdp"
         android:layout_marginRight="@dimen/_44sdp"
         android:fontFamily="@font/montserrat_semibold"
@@ -162,7 +164,6 @@
         android:textAllCaps="false"
         android:textColor="@color/whiteMain"
         android:textSize="@dimen/_13sdp"
-        app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="@dimen/_7sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

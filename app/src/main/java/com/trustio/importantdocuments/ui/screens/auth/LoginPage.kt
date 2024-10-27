@@ -64,7 +64,7 @@ class LoginPage : BaseFragment<LoginPageBinding>(LoginPageBinding::inflate) {
     private fun initPhone(){
         binding.phoneLogin.addTextChangedListener {
             val phoneNumber = it.toString()
-            binding.loginClick.isEnabled = isValidPhoneNumber(phoneNumber)
+            binding.loginClick.isEnabled = isValidPhoneNumber(phoneNumber) && binding.phoneLogin.text.toString().isNotEmpty()
         }
     }
     private fun initClicks() {
