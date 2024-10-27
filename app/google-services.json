@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "902668613274",
+    "project_id": "important-documents-91534",
+    "storage_bucket": "important-documents-91534.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902668613274:android:cc8a87b5d599b1a562d123",
+        "android_client_info": {
+          "package_name": "com.trustio.importantdocuments"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCigIyMEN7Gbjbw_v-HItJnbGhCz8XTCMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

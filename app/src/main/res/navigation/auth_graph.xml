@@ -9,5 +9,31 @@
         android:id="@+id/loginPage2"
         android:name="com.trustio.importantdocuments.ui.screens.auth.LoginPage"
         android:label="login_page"
-        tools:layout="@layout/login_page" />
+        tools:layout="@layout/login_page" >
+        <action
+            android:id="@+id/action_loginPage2_to_registerScreen"
+            app:destination="@id/registerScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerScreen"
+        tools:layout="@layout/register_page"
+        android:name="com.trustio.importantdocuments.ui.screens.auth.RegisterScreen"
+        android:label="RegisterScreen" >
+        <action
+            android:id="@+id/action_registerScreen_to_otpScreen"
+            app:destination="@id/otpScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/otpScreen"
+        android:name="com.trustio.importantdocuments.ui.screens.auth.OtpScreen"
+        android:label="OtpScreen" >
+        <action
+            android:id="@+id/action_otpScreen_to_confirmRegisterScreen"
+            app:destination="@id/confirmRegisterScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmRegisterScreen"
+        android:name="com.trustio.importantdocuments.ui.screens.auth.ConfirmRegisterScreen"
+        android:label="confirm_register_screen"
+        tools:layout="@layout/confirm_register_screen" />
 </navigation>

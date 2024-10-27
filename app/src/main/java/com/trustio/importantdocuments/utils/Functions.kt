@@ -55,6 +55,30 @@ fun Fragment.hideSystemBars() {
                     or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             )
 }
+
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
+}
+
+fun convertToPlainPhoneNumber(maskedPhoneNumber: String): String {
+    // Remove all characters that are not digits or '+'
+    return maskedPhoneNumber.filter { it.isDigit() || it == '+' }
+}
+fun sanitizePhoneNumber(phoneNumber: String): String {
+    return phoneNumber.replace("[()\\s-]".toRegex(), "")
+}
+
+fun isValidPhoneNumber(phoneNumber: String): Boolean {
+    val regex = Regex("""\+998 \(\d{2}\) \d{3}-\d{2}-\d{2}""")
+    return regex.matches(phoneNumber)
+}
+
+
 fun setAnimation(
     context: Context,
     viewToAnimate: View,
