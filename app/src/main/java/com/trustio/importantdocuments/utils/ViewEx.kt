@@ -53,6 +53,7 @@ fun snackString(s: String?, activity: Activity? = null, clipboard: String? = nul
                     s,
                     Snackbar.LENGTH_LONG
                 )
+                snackBar.setTextColor(resources.getColor(R.color.white_and_black))
                 snackBar.view.apply {
                     updateLayoutParams<FrameLayout.LayoutParams> {
                         gravity = (Gravity.CENTER_HORIZONTAL or Gravity.TOP)

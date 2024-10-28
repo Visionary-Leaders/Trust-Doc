@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -43,13 +44,14 @@ class LoginPage : BaseFragment<LoginPageBinding>(LoginPageBinding::inflate) {
             }
             it?.onFailure {
                 snackString(it.message)
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
             }
         }.launchIn(lifecycleScope)
     }
 
     override fun onViewCreate(savedInstanceState: Bundle?) {
         initClicks()
-        initPhone()
+//        initPhone()
         setupAnimToViews()
     }
 

@@ -25,6 +25,7 @@ import com.trustio.importantdocuments.databinding.OtpScreenBinding
 import com.trustio.importantdocuments.utils.BaseFragment
 import com.trustio.importantdocuments.utils.animationTransaction
 import com.trustio.importantdocuments.utils.gone
+import com.trustio.importantdocuments.utils.hideKeyboard
 import com.trustio.importantdocuments.utils.invisible
 import com.trustio.importantdocuments.utils.sanitizePhoneNumber
 import com.trustio.importantdocuments.utils.snackString
@@ -53,6 +54,7 @@ class OtpScreen : BaseFragment<OtpScreenBinding>(OtpScreenBinding::inflate) {
             it?.onFailure {
                 binding.visibleOtpProgress.gone()
                 binding.btnRegisterTxt.visible()
+                Toast.makeText(requireActivity(), it.message, Toast.LENGTH_SHORT).show()
                 snackString("Error ${it.message}")
             }
         }.launchIn(lifecycleScope)
@@ -100,6 +102,7 @@ class OtpScreen : BaseFragment<OtpScreenBinding>(OtpScreenBinding::inflate) {
                 if (otpTxt.otp.length == 6) {
                     binding.visibleOtpProgress.visible()
                     binding.btnRegisterTxt.gone()
+                    hideKeyboard(binding.otpTxt)
                     model.confirmOtpFake(binding.otpTxt.otp.toString())
                 } else {
                     snackString("Please enter 6 digit code")
@@ -114,6 +117,8 @@ class OtpScreen : BaseFragment<OtpScreenBinding>(OtpScreenBinding::inflate) {
 
                     binding.visibleOtpProgress.visible()
                     binding.btnRegisterTxt.gone()
+                    hideKeyboard(binding.otpTxt)
+
                 }
 
             }

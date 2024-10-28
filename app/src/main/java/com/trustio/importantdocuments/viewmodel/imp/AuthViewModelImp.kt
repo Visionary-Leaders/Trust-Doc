@@ -1,6 +1,7 @@
 package com.trustio.importantdocuments.viewmodel.imp
 
 import android.app.Activity
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.Zbekz.tashkentmetro.utils.enums.CurrentScreenEnum
@@ -9,6 +10,8 @@ import com.trustio.importantdocuments.data.remote.request.LoginRequest
 import com.trustio.importantdocuments.data.remote.request.RegisterRequest
 import com.trustio.importantdocuments.data.remote.response.RegisterResponse
 import com.trustio.importantdocuments.repository.AuthRepository
+import com.trustio.importantdocuments.utils.ResultApp
+import com.trustio.importantdocuments.utils.hasConnection
 import com.trustio.importantdocuments.viewmodel.AuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,13 +31,20 @@ class AuthViewModelImp @Inject constructor(val repo:AuthRepository,val appRefere
     override val registerResponse: StateFlow<Result<RegisterResponse>?> =_registerResponse
     private val _loginResponse = MutableStateFlow<Result<RegisterResponse>?>(null)
     override val loginResponse: StateFlow<Result<RegisterResponse>?> =_loginResponse
+    override val successResponseLiveData: MutableLiveData<ResultApp> = MutableLiveData()
+    override val noInternetLiveData: MutableLiveData<Unit> = MutableLiveData()
+    override val errorResponseLiveData: MutableLiveData<String> = MutableLiveData()
 
     override fun sendSms(phoneNumber: String, activity: Activity) {
-        viewModelScope.launch {
-            repo.sendSms(phoneNumber, activity).collect { result ->
-                _smsState.value = result
-            }
+        if (hasConnection()) {
+            repo
+                .sendOtp(phoneNumber, activity).onEach {
+                    successResponseLiveData.value = it
+                }.launchIn(viewModelScope)
+        }else {
+            noInternetLiveData .value =Unit
         }
+
     }
 
     override fun confirmOtpFake(code: String) {

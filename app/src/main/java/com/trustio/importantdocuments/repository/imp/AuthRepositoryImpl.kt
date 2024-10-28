@@ -8,17 +8,22 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
+import com.trustio.importantdocuments.app.App
 import com.trustio.importantdocuments.data.remote.api.AuthApi
 import com.trustio.importantdocuments.data.remote.request.LoginRequest
 import com.trustio.importantdocuments.data.remote.request.RegisterRequest
 import com.trustio.importantdocuments.data.remote.response.ErrorResponse
+import com.trustio.importantdocuments.data.remote.response.LoginErrorResponse
 import com.trustio.importantdocuments.data.remote.response.RegisterResponse
 import com.trustio.importantdocuments.repository.AuthRepository
+import com.trustio.importantdocuments.utils.ResultApp
 import com.trustio.importantdocuments.utils.sanitizePhoneNumber
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -27,58 +32,54 @@ class AuthRepositoryImpl @Inject constructor(
     private val apiService: AuthApi
 ) : AuthRepository {
 
-
-
-
-    override fun sendSms(phoneNumber: String, activity: Activity): Flow<Result<String>> = callbackFlow {
-        val sanitizedPhoneNumber = sanitizePhoneNumber(phoneNumber)
-
+    override fun sendOtp(phoneNumber: String, activity: Activity)=  callbackFlow <ResultApp> {
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                trySend(Result.success(verificationId)).isSuccess
-            }
-
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                trySend(Result.success("Verification completed")).isSuccess
+                trySend(ResultApp.Success(true))
             }
 
             override fun onVerificationFailed(exception: FirebaseException) {
-                Log.e("AuthRepository", "onVerificationFailed: ${exception.message}")
-                trySend(Result.success("VerificationCompleted")).isSuccess
+                trySend(ResultApp.Error(exception))
+            }
+
+            override fun onCodeSent(
+                verificationId: String,
+                token: PhoneAuthProvider.ForceResendingToken
+            ) {
+
+                trySend(ResultApp.CodeSent(verificationId))
             }
         }
 
-        firebaseAuth.setLanguageCode("uz")
-        PhoneAuthProvider.verifyPhoneNumber(
-            PhoneAuthOptions.newBuilder(firebaseAuth)
-                .setPhoneNumber(sanitizedPhoneNumber)
-                .setTimeout(60L, TimeUnit.SECONDS)
-                .setActivity(activity)
-                .setCallbacks(callbacks)
-                .build()
+        firebaseAuth.setLanguageCode("en")
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+            sanitizePhoneNumber(phoneNumber),  // Phone number to verify
+            60,            // Timeout duration
+            TimeUnit.SECONDS,
+            App.currentActivity()!!,
+            callbacks
         )
+        awaitClose()
 
-        awaitClose { /* Optional cleanup */ }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    override fun confirmOtpFake(code: String) =flow<Result<String>> {
-        if ( code =="123456"){
+    override fun confirmOtpFake(code: String) = flow<Result<String>> {
+        if (code == "123456") {
             emit(Result.success("Verification completed"))
-        }else {
+        } else {
             emit(Result.failure(Exception("Wrong code")))
         }
-
     }
 
-    override fun registerUser(registerRequest: RegisterRequest)=flow<Result<RegisterResponse>> {
+    override fun registerUser(registerRequest: RegisterRequest) = flow<Result<RegisterResponse>> {
         emit(handleRegistration(registerRequest))
     }
 
-    override fun loginUser(loginRequest: LoginRequest) =flow<Result<RegisterResponse>> {
+    override fun loginUser(loginRequest: LoginRequest) = flow<Result<RegisterResponse>> {
         emit(handleLogin(loginRequest))
     }
 
-    private suspend fun  handleLogin(request: LoginRequest): Result<RegisterResponse> {
+    private suspend fun handleLogin(request: LoginRequest): Result<RegisterResponse> {
         val response = apiService.loginUser(request)
         Log.d("ERROR", "handleLogin: ${response.errorBody()?.string()}")
         Log.d("ERROR", "handleLogin: ${response.code()}")
@@ -86,9 +87,7 @@ class AuthRepositoryImpl @Inject constructor(
             response.isSuccessful -> response.body()?.let {
                 Result.success(it)
             } ?: Result.failure(Exception("Empty response body"))
-
             else -> Result.failure(parseLoginErr(response.errorBody()?.string()))
-
         }
     }
 
@@ -100,7 +99,6 @@ class AuthRepositoryImpl @Inject constructor(
             response.isSuccessful -> response.body()?.let {
                 Result.success(it)
             } ?: Result.failure(Exception("Empty response body"))
-
             else -> Result.failure(parseError(response.errorBody()?.string()))
         }
     }
@@ -115,10 +113,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     private fun parseLoginErr(errorBody: String?): Exception {
         val errorResponse = errorBody?.let {
-            Gson().fromJson(it, RegisterResponse::class.java)
+            Gson().fromJson(it, LoginErrorResponse::class.java)
         }
         val errorMessage = errorResponse?.message ?: "Unknown error"
         return Exception(errorMessage)
     }
-
 }

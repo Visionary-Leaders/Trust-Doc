@@ -30,4 +30,7 @@
     <string name="otp_des">Please enter the code you sent to\n</string>
     <string name="resend_otp_title">Resend the code via</string>
     <string name="success_otp_btn_title">Confirm</string>
+    <string name="no_connection_title">No Connection</string>
+    <string name="no_connection_des">No network connection, check your network settings or try again!</string>
+    <string name="try_again">Try Again</string>
 </resources>
