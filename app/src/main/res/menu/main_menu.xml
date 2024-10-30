@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/button_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home" />
+    <item
+        android:icon="@drawable/ic_search"
+        android:id="@+id/button_search"
+        android:title="@string/search" />
+    <item android:id="@+id/button_fav"
+        android:title="@string/fav"
+        android:icon="@drawable/ic_fav"/>
+    <item
+        android:icon="@drawable/ic_settings"
+        android:id="@+id/button_settings"
+        android:title="@string/settings" />
+
+</menu>

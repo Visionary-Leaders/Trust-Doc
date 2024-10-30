@@ -14,7 +14,12 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
-
+    <style name="NavBarText">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">2sp</item>
+    </style>
     <style name="Theme.Main" parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- Primary brand color. -->

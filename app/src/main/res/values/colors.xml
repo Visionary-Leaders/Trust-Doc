@@ -21,7 +21,7 @@
     <color name="place_holder">#C2C2C2</color>
     <color name="uncheckedColor">#757575</color>
     <color name="stroke_color">#EFEFEF</color>
-    <color name="bottomBg">#C8CDDAEA</color>
+    <color name="bottomBg">#C8D9DDE1</color>
     <color name="violet_400">#91A6FF</color>
     <color name="violet_700">#3358FF</color>
     <color name="shadow">#C26FDB</color>
@@ -46,6 +46,7 @@
     <color name="button_contribute">#efdcf8</color>
     <color name="card_intro_color">#EAEAF1</color>
     <color name="card_search_color">#C0C0C6</color>
+    <color name="navbar_bg">#F0F0F8</color>
     <color name="main_background">#E8E0EB</color>
 
     <color name="airplane_color">#007AFF</color>

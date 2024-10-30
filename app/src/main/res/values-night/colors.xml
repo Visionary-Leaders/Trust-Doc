@@ -19,7 +19,8 @@
 
     <color name="main_background">#000000</color>
     <color name="airplane_color">#fff</color>
-    <color name="bottomBg">#232527</color>
+    <color name="bottomBg">#FC2C2D30</color>
+    <color name="navbar_bg">#FC2C2D30</color>
 
 
 </resources>

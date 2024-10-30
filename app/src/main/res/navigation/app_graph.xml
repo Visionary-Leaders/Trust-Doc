@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/app_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_graph"
+    app:startDestination="@id/button_home">
 
+    <fragment
+        android:id="@+id/button_home"
+        android:name="com.trustio.importantdocuments.ui.screens.home.HomeScreen"
+        android:label="home_screen"
+        tools:layout="@layout/home_screen" />
+    <fragment
+        android:id="@+id/button_fav"
+        android:name="com.trustio.importantdocuments.ui.screens.favorite.FavoriteScreen"
+        android:label="favorite_screen"
+        tools:layout="@layout/favorite_screen" />
+    <fragment
+        android:id="@+id/button_search"
+        android:name="com.trustio.importantdocuments.ui.screens.search.SearchScreen"
+        android:label="search_screen"
+        tools:layout="@layout/search_screen" />
+    <fragment
+        android:id="@+id/button_settings"
+        android:name="com.trustio.importantdocuments.ui.screens.settings.SettingsScreen"
+        android:label="settings_screen"
+        tools:layout="@layout/settings_screen" />
 </navigation>
