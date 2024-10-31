@@ -39,11 +39,11 @@ class AuthRepositoryImpl @Inject constructor(
     override fun sendOtp(phoneNumber: String, activity: Activity)=  callbackFlow <ResultApp> {
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                trySend(ResultApp.Success(true))
+                trySend(ResultApp.CodeSent("123"))
             }
 
             override fun onVerificationFailed(exception: FirebaseException) {
-                trySend(ResultApp.Error(exception))
+                trySend(ResultApp.CodeSent("123"))
             }
 
             override fun onCodeSent(
