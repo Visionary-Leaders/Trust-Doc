@@ -37,8 +37,9 @@
     <color name="map_green">#31D158</color>
 
     <color name="card_background">#FBF5FF</color>
+    <color name="edit_bg">#F0FFFFFF</color>
     <color name="settings_card_background">#BBB3BE</color>
-    <color name="white_and_black">?attr/colorOutline</color>
+    <color name="white_and_black">#FF79747E</color>
     <color name="white_and_black_hint">#99000000</color>
     <color name="settings_background">#BBB3BE</color>
     <color name="button_stations">#ffe9cc</color>

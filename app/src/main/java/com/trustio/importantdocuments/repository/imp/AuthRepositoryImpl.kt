@@ -10,6 +10,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
 import com.trustio.importantdocuments.app.App
 import com.trustio.importantdocuments.data.remote.api.AuthApi
+import com.trustio.importantdocuments.data.remote.api.DocApi
+import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.LoginRequest
 import com.trustio.importantdocuments.data.remote.request.RegisterRequest
 import com.trustio.importantdocuments.data.remote.response.ErrorResponse
@@ -24,12 +26,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val apiService: AuthApi
+    private val apiService: AuthApi,
+    private val docApi :DocApi
 ) : AuthRepository {
 
     override fun sendOtp(phoneNumber: String, activity: Activity)=  callbackFlow <ResultApp> {
@@ -63,6 +67,15 @@ class AuthRepositoryImpl @Inject constructor(
 
     }.flowOn(Dispatchers.IO)
 
+    private suspend fun fourDocForFirst() {
+        withContext(Dispatchers.IO) {
+            docApi.addCollection(CollectionRequest("Shaxsiy Malumotlar"))
+            docApi.addCollection(CollectionRequest("Transport Malumotlar"))
+            docApi.addCollection(CollectionRequest("Tibbiy Malumotlar"))
+            docApi.addCollection(CollectionRequest("Mol-Mulk Malumotlar"))
+        }
+    }
+
     override fun confirmOtpFake(code: String) = flow<Result<String>> {
         if (code == "123456") {
             emit(Result.success("Verification completed"))
@@ -85,6 +98,7 @@ class AuthRepositoryImpl @Inject constructor(
         Log.d("ERROR", "handleLogin: ${response.code()}")
         return when {
             response.isSuccessful -> response.body()?.let {
+
                 Result.success(it)
             } ?: Result.failure(Exception("Empty response body"))
             else -> Result.failure(parseLoginErr(response.errorBody()?.string()))
@@ -92,16 +106,24 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     private suspend fun handleRegistration(request: RegisterRequest): Result<RegisterResponse> {
-        val response = apiService.registerUser(request)
-        Log.d("ERROR", "handleRegistration: ${response.errorBody()?.string()}")
-        Log.d("ERROR", "handleRegistration: ${response.code()}")
-        return when {
-            response.isSuccessful -> response.body()?.let {
-                Result.success(it)
-            } ?: Result.failure(Exception("Empty response body"))
-            else -> Result.failure(parseError(response.errorBody()?.string()))
+        return try {
+            val response = apiService.registerUser(request)
+            Log.d("ERROR", "handleRegistration: ${response.errorBody()?.string()}")
+            Log.d("ERROR", "handleRegistration: ${response.code()}")
+            if (response.isSuccessful) {
+                fourDocForFirst() // Call to add collections
+
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Empty response body"))
+            } else {
+                Result.failure(parseError(response.errorBody()?.string()))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
+
 
     private fun parseError(errorBody: String?): Exception {
         val errorResponse = errorBody?.let {

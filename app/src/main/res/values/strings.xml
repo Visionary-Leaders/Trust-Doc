@@ -37,4 +37,6 @@
     <string name="search">Search</string>
     <string name="settings">Settings</string>
     <string name="fav">Favorite</string>
+    <string name="logo">Logo</string>
+    <string name="search_file">Search File</string>
 </resources>

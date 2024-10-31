@@ -24,8 +24,8 @@
 
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="android:statusBarColor">@color/main_background</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">?attr/colorSurfaceContainer</item>
+        <item name="android:statusBarColor">@color/card_background</item>
+        <item name="android:navigationBarColor">@color/navbar_bg</item>
     </style>
 </resources>

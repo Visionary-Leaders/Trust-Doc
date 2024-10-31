@@ -3,6 +3,7 @@ package com.trustio.importantdocuments.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.trustio.importantdocuments.data.remote.api.AuthApi
+import com.trustio.importantdocuments.data.remote.api.DocApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,18 +34,23 @@ object NetworkModule {
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-
-    @[Provides Singleton Named("grossuzApi")]
-    fun getGrossUzRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
-        .baseUrl("https://gross.uz//")
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+//
+//
+//    @[Provides Singleton Named("grossuzApi")]
+//    fun getGrossUzRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
+//        .baseUrl("https://gross.uz//")
+//        .client(client)
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
 
 
     @Provides
     fun getAuthApi(@Named("testApi") retrofit: Retrofit): AuthApi =
         retrofit.create(AuthApi::class.java)
+
+    @Provides
+    fun getDocsApi(@Named("testApi") retrofit: Retrofit): DocApi =
+        retrofit.create(DocApi::class.java)
 
 
 
