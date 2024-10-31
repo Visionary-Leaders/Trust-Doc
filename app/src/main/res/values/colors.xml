@@ -38,7 +38,7 @@
 
     <color name="card_background">#FBF5FF</color>
     <color name="settings_card_background">#BBB3BE</color>
-    <color name="white_and_black">#000000</color>
+    <color name="white_and_black">?attr/colorOutline</color>
     <color name="white_and_black_hint">#99000000</color>
     <color name="settings_background">#BBB3BE</color>
     <color name="button_stations">#ffe9cc</color>
