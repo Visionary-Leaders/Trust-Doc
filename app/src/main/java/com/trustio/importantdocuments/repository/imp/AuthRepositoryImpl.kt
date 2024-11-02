@@ -9,11 +9,13 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
 import com.trustio.importantdocuments.app.App
+import com.trustio.importantdocuments.data.local.shp.AppReference
 import com.trustio.importantdocuments.data.remote.api.AuthApi
 import com.trustio.importantdocuments.data.remote.api.DocApi
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.LoginRequest
 import com.trustio.importantdocuments.data.remote.request.RegisterRequest
+import com.trustio.importantdocuments.data.remote.request.TokenRequest
 import com.trustio.importantdocuments.data.remote.response.ErrorResponse
 import com.trustio.importantdocuments.data.remote.response.LoginErrorResponse
 import com.trustio.importantdocuments.data.remote.response.RegisterResponse
@@ -32,6 +34,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
+    private val appReference: AppReference,
     private val apiService: AuthApi,
     private val docApi :DocApi
 ) : AuthRepository {
@@ -69,10 +72,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     private suspend fun fourDocForFirst() {
         withContext(Dispatchers.IO) {
-            docApi.addCollection(CollectionRequest("Shaxsiy Malumotlar"))
-            docApi.addCollection(CollectionRequest("Transport Malumotlar"))
-            docApi.addCollection(CollectionRequest("Tibbiy Malumotlar"))
-            docApi.addCollection(CollectionRequest("Mol-Mulk Malumotlar"))
+            docApi.addCollection(appReference.token,CollectionRequest("Shaxsiy Malumotlar"))
+            docApi.addCollection(appReference.token,CollectionRequest("Transport Malumotlar"))
+            docApi.addCollection(appReference.token,CollectionRequest("Tibbiy Malumotlar"))
+            docApi.addCollection(appReference.token,CollectionRequest("Mol-Mulk Malumotlar"))
         }
     }
 
@@ -98,7 +101,12 @@ class AuthRepositoryImpl @Inject constructor(
         Log.d("ERROR", "handleLogin: ${response.code()}")
         return when {
             response.isSuccessful -> response.body()?.let {
-
+                apiService.getFullToken(TokenRequest(request.password,request.phone_number))?.let { data ->
+                    if (data.isSuccessful) {
+                        val tokenResponse =data.body()
+                        appReference.token ="Bearer ${tokenResponse!!.access}"
+                    }
+                }
                 Result.success(it)
             } ?: Result.failure(Exception("Empty response body"))
             else -> Result.failure(parseLoginErr(response.errorBody()?.string()))
@@ -111,9 +119,17 @@ class AuthRepositoryImpl @Inject constructor(
             Log.d("ERROR", "handleRegistration: ${response.errorBody()?.string()}")
             Log.d("ERROR", "handleRegistration: ${response.code()}")
             if (response.isSuccessful) {
-                fourDocForFirst() // Call to add collections
 
                 response.body()?.let {
+                    apiService.getFullToken(TokenRequest(request.password,request.phone_number))?.let { data ->
+                        if (data.isSuccessful) {
+                            val tokenResponse =data.body()
+                            appReference.token ="Bearer ${tokenResponse!!.access}"
+                            fourDocForFirst() // Call to add collections
+                        }
+                    }
+
+
                     Result.success(it)
                 } ?: Result.failure(Exception("Empty response body"))
             } else {

@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/card_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/card_background"
     tools:context=".ui.screens.home.HomeScreen">
 
     <TextView
@@ -21,30 +21,44 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:layout_width="@dimen/_35sdp"
-        android:layout_marginEnd="@dimen/_16sdp"
-        app:tint="?attr/colorOutline"
         android:layout_height="@dimen/_35sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView"
-        app:srcCompat="@drawable/ic_profile" />
+        app:srcCompat="@drawable/ic_profile"
+        app:tint="?attr/colorOutline" />
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:hint="@string/search_file"
+        android:id="@+id/appCompatEditText"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/_16sdp"
         android:layout_height="@dimen/_40sdp"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_16sdp"
         android:background="@drawable/edit_bg"
         android:drawableStart="@drawable/ic_search_min"
-        android:drawablePadding="@dimen/_4sdp"
 
-        android:textSize="@dimen/_14ssp"
+        android:drawablePadding="@dimen/_4sdp"
         android:fontFamily="@font/nunito_semi_bold"
-        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:hint="@string/search_folder"
         android:paddingStart="@dimen/_12sdp"
+        android:textSize="@dimen/_14ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         tools:ignore="RtlSymmetry" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:paddingTop="@dimen/_4sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatEditText"
+        tools:itemCount="9"
+        tools:listitem="@layout/collection_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
