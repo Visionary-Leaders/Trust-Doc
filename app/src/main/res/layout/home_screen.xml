@@ -48,11 +48,22 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         tools:ignore="RtlSymmetry" />
 
+    <ProgressBar
+        android:id="@+id/collectionProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/collectionRv"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_4sdp"
-        android:paddingTop="@dimen/_4sdp"
+        android:paddingTop="@dimen/_16sdp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

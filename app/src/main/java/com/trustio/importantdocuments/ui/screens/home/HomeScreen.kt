@@ -5,13 +5,45 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.databinding.HomeScreenBinding
+import com.trustio.importantdocuments.ui.screens.home.adapter.CollectionAdapter
 import com.trustio.importantdocuments.utils.BaseFragment
+import com.trustio.importantdocuments.utils.gone
+import com.trustio.importantdocuments.utils.showSnack
+import com.trustio.importantdocuments.utils.snackString
+import com.trustio.importantdocuments.utils.visible
+import com.trustio.importantdocuments.viewmodel.imp.HomeScreenViewModelImp
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+@AndroidEntryPoint
+class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
+    private val model by viewModels<HomeScreenViewModelImp>()
+    private val adapter by lazy { CollectionAdapter() }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        model.collectionList.observe(this) {
+            binding.collectionProgress.gone()
+            binding.collectionRv.visible()
+            binding.collectionRv.adapter = adapter
+            adapter.submitList(it)
+        }
+        model.errorResponse.observe(this) {
 
-class HomeScreen:BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
+            binding.collectionProgress.gone()
+            binding.collectionRv.visible()
+            showSnack(binding.root, it)
+        }
+    }
+
     override fun onViewCreate(savedInstanceState: Bundle?) {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+    }
 }

@@ -101,6 +101,8 @@ class AuthRepositoryImpl @Inject constructor(
         Log.d("ERROR", "handleLogin: ${response.code()}")
         return when {
             response.isSuccessful -> response.body()?.let {
+                appReference.password =request.password
+                appReference.phone =request.phone_number
                 apiService.getFullToken(TokenRequest(request.password,request.phone_number))?.let { data ->
                     if (data.isSuccessful) {
                         val tokenResponse =data.body()
@@ -121,6 +123,8 @@ class AuthRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
 
                 response.body()?.let {
+                    appReference.password =request.password
+                    appReference.phone =request.phone_number
                     apiService.getFullToken(TokenRequest(request.password,request.phone_number))?.let { data ->
                         if (data.isSuccessful) {
                             val tokenResponse =data.body()

@@ -20,6 +20,7 @@ class AppReference @Inject constructor(
     private var editor: SharedPreferences.Editor = sharedPref.edit()
 
 
+
     var currentScreenEnum: CurrentScreenEnum
         get() = sharedPref.getString("current_screen", CurrentScreenEnum.INTRO.name)!!
             .screenCurrentEnum()
@@ -31,6 +32,17 @@ class AppReference @Inject constructor(
         get() = sharedPref.getString("mapStyle", "normal").toString()
         set(value) {
             sharedPref.edit().putString("mapStyle", value).apply()
+        }
+    var password:String
+        get() = sharedPref.getString("password", "").toString()
+        set(value) {
+            sharedPref.edit().putString("password", value).apply()
+        }
+
+    var phone:String
+        get() = sharedPref.getString("phone", "").toString()
+        set(value) {
+            sharedPref.edit().putString("phone", value).apply()
         }
 
     var token: String

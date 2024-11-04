@@ -1,12 +1,13 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_55sdp"
-    android:layout_marginVertical="@dimen/_3sdp"
+    android:layout_marginVertical="@dimen/_4sdp"
     app:cardCornerRadius="@dimen/_12sdp"
     app:cardElevation="0dp"
+    android:background="?selectableItemBackgroundBorderless"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_marginHorizontal="@dimen/_8sdp"
+    android:layout_marginHorizontal="@dimen/_10sdp"
     android:elevation="0dp"
     app:cardBackgroundColor="#4AB656DF">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,15 +35,28 @@
 
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeableImageView"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
             android:layout_marginEnd="@dimen/_10sdp"
-            app:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/cardView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/cardView"
-            app:srcCompat="@drawable/next" />
+            app:srcCompat="@drawable/next"
+            app:tint="@color/white" />
 
+        <TextView
+            android:id="@+id/collectionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/urbanist_bold"
+            android:text="Collection Name"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView"
+            app:layout_constraintStart_toEndOf="@+id/cardView"
+            app:layout_constraintTop_toTopOf="@+id/cardView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

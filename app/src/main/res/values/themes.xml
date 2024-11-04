@@ -3,7 +3,8 @@
     <style name="Theme.ImportantDocuments" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorSecondaryContainer">@color/colorPrimary</item>
+        <item name="colorSecondary">@color/violet_400</item>
+        <item name="colorSecondaryContainer">@color/violet_400</item>
     </style>
 
     <style name="Theme.Intro" parent="Theme.ImportantDocuments">

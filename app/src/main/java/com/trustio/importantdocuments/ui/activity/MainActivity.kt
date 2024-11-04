@@ -7,8 +7,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.databinding.ActivityAuthBinding
 import com.trustio.importantdocuments.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 import nl.joery.animatedbottombar.AnimatedBottomBar
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
