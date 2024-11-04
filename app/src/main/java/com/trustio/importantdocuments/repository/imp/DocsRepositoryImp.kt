@@ -15,28 +15,29 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class DocsRepositoryImp @Inject constructor(
-    private val docApi: DocApi,
-    private val appReference: AppReference,
-    private val authApi: AuthApi
-) : DocsRepository {
+class DocsRepositoryImp @Inject constructor(private val docApi: DocApi,private val appReference: AppReference,private val authApi:AuthApi) : DocsRepository {
     override suspend fun addCollection(collectionRequest: CollectionRequest) =
         flow {
-            val response = docApi.addCollection(appReference.token, collectionRequest)
+            val response = docApi.addCollection(appReference.token,collectionRequest)
             if (response.isSuccessful) emit(Result.success(response.body()!!))
             else emit(Result.failure(Exception(response.errorBody()!!.string())))
         }.flowOn(Dispatchers.IO)
 
-    override suspend fun getCollections() = flow<Result<SectionsResponse>> {
-        val response = docApi.getSections(appReference.token!!)
-        if (response.isSuccessful) {
-            emit(Result.success(response.body()!!))
-        } else if (response.code() == 401) {
-            val newResponse = docApi.getSections(appReference.token!!)
-            emit(Result.success(newResponse.body()!!))
-        } else {
-            emit(Result.failure(Exception(response.errorBody()?.string())))
+    override suspend fun getCollections()
+    =flow<Result<SectionsResponse>> {
+        val response =docApi.getSections(appReference.token!!)
+            if (response.isSuccessful){
+                emit(Result.success(response.body()!!))
+            }else if (response.code() ==401) {
+                val getToken =authApi.getFullToken(TokenRequest(appReference.password,appReference.phone))
+                if (getToken.isSuccessful){
+                    appReference.token = "Bearer ${getToken.body()?.access}"
+                    val newResponse =docApi.getSections(appReference.token!!)
+                    emit(Result.success(newResponse.body()!!))
+                }
+            }else {
+                emit(Result.failure(Exception(response.errorBody()?.string())))
 
-        }
+            }
     }.flowOn(Dispatchers.IO)
 }

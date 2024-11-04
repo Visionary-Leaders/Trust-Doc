@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_graph"
-    app:startDestination="@id/button_home">
+    app:startDestination="@id/mainScreen">
 
     <fragment
         android:id="@+id/button_home"
@@ -25,4 +25,22 @@
         android:name="com.trustio.importantdocuments.ui.screens.settings.SettingsScreen"
         android:label="settings_screen"
         tools:layout="@layout/settings_screen" />
+    <fragment
+        android:id="@+id/mainScreen"
+        tools:layout="@layout/main_screen"
+        android:name="com.trustio.importantdocuments.ui.screens.MainScreen"
+        android:label="MainScreen" >
+        <action
+            android:id="@+id/action_mainScreen_to_button_home"
+            app:destination="@id/button_home" />
+        <action
+            android:id="@+id/action_mainScreen_to_button_settings"
+            app:destination="@id/button_settings" />
+        <action
+            android:id="@+id/action_mainScreen_to_button_fav"
+            app:destination="@id/button_fav" />
+        <action
+            android:id="@+id/action_mainScreen_to_button_search"
+            app:destination="@id/button_search" />
+    </fragment>
 </navigation>
