@@ -14,7 +14,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="blue">#0000FF</color>
     <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
+    <color name="black">#191919</color>
     <color name="red">#FF0000</color>
     <color name="inactive_input">#949494</color>
     <color name="whiteGray">#BFBFBF</color>
@@ -33,6 +33,7 @@
     <color name="filler">#54FF8400</color>
     <color name="map_yellow">#FED709</color>
     <color name="map_red">#FF453A</color>
+    <color name="only_black">#282829</color>
     <color name="map_blue">#7B45B8</color>
     <color name="map_green">#31D158</color>
 

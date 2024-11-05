@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
@@ -70,18 +71,21 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
         val cancelBtn = view.findViewById<AppCompatButton>(R.id.cancel_btn)
         val submitBtn = view.findViewById<AppCompatButton>(R.id.submit_btn)
-        val addFolderTxt =view.findViewById<AppCompatButton>(R.id.add_folder_txt)
+        val addFolderTxt =view.findViewById<AppCompatEditText>(R.id.add_folder_txt)
 
         cancelBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
 
         submitBtn.setOnClickListener {
-            if (addFolderTxt.text.isNotEmpty()){
+            if (addFolderTxt.text.toString().isNotEmpty()){
                 model.addCollection(CollectionRequest(addFolderTxt.text.toString()))
                 bottomSheetDialog.dismiss()
             }
         }
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+
     }
 
     private fun setupBottomNavigation() {
