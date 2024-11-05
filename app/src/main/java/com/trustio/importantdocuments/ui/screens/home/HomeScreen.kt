@@ -44,9 +44,27 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
         }
     }
 
+    private fun convertCyrillicToLatin(text: String): String {
+        return text.replace("а", "a").replace("б", "b").replace("в", "v")
+            .replace("г", "g").replace("д", "d").replace("е", "e")
+            .replace("ё", "yo").replace("ж", "j").replace("з", "z")
+            .replace("и", "i").replace("й", "y").replace("к", "k")
+            .replace("л", "l").replace("м", "m").replace("н", "n")
+            .replace("о", "o").replace("п", "p").replace("р", "r")
+            .replace("с", "s").replace("т", "t").replace("у", "u")
+            .replace("ф", "f").replace("х", "x").replace("ц", "ts")
+            .replace("ч", "ch").replace("ш", "sh").replace("щ", "shch")
+            .replace("ъ", "'").replace("ы", "y").replace("ь", "'")
+            .replace("э", "e").replace("ю", "yu").replace("я", "ya")
+    }
+
+
+
     private fun filterList(query: String,yourListData: List<SectionsResponseItem>) {
+        val convertedQuery = convertCyrillicToLatin(query)
+
         val filteredList = yourListData.filter {
-            it.name.contains(query, ignoreCase = true)
+            it.name.contains(convertedQuery, ignoreCase = true)
         }
         adapter.submitList(filteredList)
     }
