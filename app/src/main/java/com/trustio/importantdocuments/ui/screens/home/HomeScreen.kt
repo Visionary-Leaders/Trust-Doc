@@ -58,10 +58,12 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
             .replace("э", "e").replace("ю", "yu").replace("я", "ya")
     }
 
-
+    private fun isCyrillic(text: String): Boolean {
+        return text.any { it in 'а'..'я' || it in 'А'..'Я' } // Matnda Kiril harflarini tekshiradi
+    }
 
     private fun filterList(query: String,yourListData: List<SectionsResponseItem>) {
-        val convertedQuery = convertCyrillicToLatin(query)
+        val convertedQuery = if (isCyrillic(query)) convertCyrillicToLatin(query) else query
 
         val filteredList = yourListData.filter {
             it.name.contains(convertedQuery, ignoreCase = true)
