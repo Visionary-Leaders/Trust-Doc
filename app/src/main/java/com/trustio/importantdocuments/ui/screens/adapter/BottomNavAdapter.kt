@@ -1,6 +1,7 @@
 package com.trustio.importantdocuments.ui.screens.adapter
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -9,8 +10,7 @@ import com.trustio.importantdocuments.ui.screens.home.HomeScreen
 import com.trustio.importantdocuments.ui.screens.search.SearchScreen
 import com.trustio.importantdocuments.ui.screens.settings.SettingsScreen
 
-class BottomNavAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
-    FragmentStateAdapter(fragmentManager, lifecycle) {
+class BottomNavAdapter(fragmentManager: FragmentActivity) : FragmentStateAdapter(fragmentManager){
 
     override fun getItemCount(): Int = 4
 

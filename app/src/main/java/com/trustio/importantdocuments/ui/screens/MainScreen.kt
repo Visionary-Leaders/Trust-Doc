@@ -21,7 +21,7 @@ import nl.joery.animatedbottombar.AnimatedBottomBar
 @AndroidEntryPoint
 class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
    private val model by viewModels<HomeScreenViewModelImp>()
-    private val adapter by lazy { BottomNavAdapter(parentFragmentManager,lifecycle) }
+    private val adapter by lazy { BottomNavAdapter(requireActivity()) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model.errorResponse.observe(this){

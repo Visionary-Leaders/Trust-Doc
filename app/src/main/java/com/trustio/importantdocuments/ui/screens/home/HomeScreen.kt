@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.trustio.importantdocuments.R
+import com.trustio.importantdocuments.data.remote.response.section.SectionsResponseItem
 import com.trustio.importantdocuments.databinding.HomeScreenBinding
 import com.trustio.importantdocuments.ui.screens.home.adapter.CollectionAdapter
 import com.trustio.importantdocuments.utils.BaseFragment
@@ -24,11 +26,15 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
     private val adapter by lazy { CollectionAdapter() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        model.collectionList.observe(this) {
+        model.collectionList.observe(this) {response->
             binding.collectionProgress.gone()
             binding.collectionRv.visible()
             binding.collectionRv.adapter = adapter
-            adapter.submitList(it)
+            adapter.submitList(response)
+            binding.searchFolder.addTextChangedListener {
+                val query = it?.toString() ?: ""
+                filterList(query,response)
+            }
         }
         model.errorResponse.observe(this) {
 
@@ -38,12 +44,12 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
         }
     }
 
-    override fun onViewCreate(savedInstanceState: Bundle?) {
-
+    private fun filterList(query: String,yourListData: List<SectionsResponseItem>) {
+        val filteredList = yourListData.filter {
+            it.name.contains(query, ignoreCase = true)
+        }
+        adapter.submitList(filteredList)
     }
+    override fun onViewCreate(savedInstanceState: Bundle?) {}
 
-    override fun onResume() {
-        super.onResume()
-
-    }
 }
