@@ -13,6 +13,7 @@ import com.trustio.importantdocuments.data.remote.response.section.SectionsRespo
 import com.trustio.importantdocuments.databinding.HomeScreenBinding
 import com.trustio.importantdocuments.ui.screens.home.adapter.CollectionAdapter
 import com.trustio.importantdocuments.utils.BaseFragment
+import com.trustio.importantdocuments.utils.LocalData
 import com.trustio.importantdocuments.utils.gone
 import com.trustio.importantdocuments.utils.showSnack
 import com.trustio.importantdocuments.utils.snackString
@@ -28,6 +29,8 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
         super.onCreate(savedInstanceState)
         model.collectionList.observe(this) {response->
             binding.collectionProgress.gone()
+            LocalData.list.clear()
+            LocalData.list.addAll(response!!)
             binding.collectionRv.visible()
             binding.collectionRv.adapter = adapter
             adapter.submitList(response)
@@ -59,7 +62,7 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
     }
 
     private fun isCyrillic(text: String): Boolean {
-        return text.any { it in 'а'..'я' || it in 'А'..'Я' } // Matnda Kiril harflarini tekshiradi
+        return text.any { it in 'а'..'я' || it in 'А'..'Я' }
     }
 
     private fun filterList(query: String,yourListData: List<SectionsResponseItem>) {

@@ -6,13 +6,16 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.databinding.MainScreenBinding
 import com.trustio.importantdocuments.ui.screens.adapter.BottomNavAdapter
+import com.trustio.importantdocuments.ui.screens.home.adapter.CollectionAdapter
 import com.trustio.importantdocuments.utils.BaseFragment
+import com.trustio.importantdocuments.utils.LocalData
 import com.trustio.importantdocuments.utils.showSnack
 import com.trustio.importantdocuments.viewmodel.imp.HomeScreenViewModelImp
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,6 +66,17 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
     }
 
 
+    private fun showChooseFolderSheet(){
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(
+            R.layout.choose_folder_for_add_file, null
+        )
+        val foldersRv = view.findViewById<RecyclerView>(R.id.foldersRv)
+        val adapter= CollectionAdapter()
+        foldersRv.adapter=adapter
+        adapter.submitList(LocalData.list)
+
+    }
     private fun showAddFolderSheet(){
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(

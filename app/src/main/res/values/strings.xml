@@ -44,4 +44,5 @@
     <string name="add_folder">Add Folder</string>
     <string name="choose_add_type">Choose Add Type</string>
     <string name="enter_folder_name">Enter Folder Name</string>
+    <string name="choose_folder">Choose Folder</string>
 </resources>
