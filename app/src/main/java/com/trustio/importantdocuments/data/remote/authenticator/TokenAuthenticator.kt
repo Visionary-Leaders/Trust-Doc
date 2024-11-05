@@ -15,25 +15,30 @@ class TokenAuthenticator(
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (responseCount(response) >= 2) return null
+        if (response.code != 401 || responseCount(response) >= 2) return null
 
+        // Synchronously request a new token if a 401 response is received
         val phone = appReference.phone
         val password = appReference.password
 
         val refreshResponse = runBlocking {
             val request = TokenRequest(phone, password)
-            authApi.getFullToken(request)
+            authApi.getFullToken(request) // Request a fresh token
         }
 
         return if (refreshResponse.isSuccessful) {
+            // Extract the new access token and update AppReference
             val newAccessToken = refreshResponse.body()?.access
             newAccessToken?.let {
-                appReference.token = "Bearer $newAccessToken"
+                appReference.token = "Bearer $newAccessToken" // Update stored token
+
+                // Retry the original request with the new token
                 response.request.newBuilder()
-                    .header("Authorization", "$newAccessToken")
+                    .header("Authorization", "Bearer $newAccessToken")
                     .build()
             }
         } else {
+            // Return null if token refresh fails
             null
         }
     }

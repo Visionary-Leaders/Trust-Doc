@@ -10,6 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.play.integrity.internal.s
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.databinding.RegisterPageBinding
 import com.trustio.importantdocuments.utils.BaseFragment
@@ -23,6 +30,7 @@ import com.trustio.importantdocuments.utils.snackString
 import com.trustio.importantdocuments.utils.visible
 import com.trustio.importantdocuments.viewmodel.imp.AuthViewModelImp
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class RegisterScreen : BaseFragment<RegisterPageBinding>(RegisterPageBinding::inflate) {
@@ -92,6 +100,45 @@ class RegisterScreen : BaseFragment<RegisterPageBinding>(RegisterPageBinding::in
 
     override fun onViewCreate(savedInstanceState: Bundle?) {
         initClicks()
+
+        val phoneNumber = "+998903640804"
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseAuthSettings = firebaseAuth.firebaseAuthSettings
+
+
+        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(requireActivity())
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    // Instant verification is applied and a credential is directly returned.
+                    // ...
+                }
+                override fun onCodeSent(
+                    verificationId: String,
+                    forceResendingToken: PhoneAuthProvider.ForceResendingToken,
+                ) {
+                    // Save the verification id somewhere
+                    // ...
+                    Log.d("jarayon", "onCodeSent: $verificationId")
+                    // The corresponding whitelisted code above should be used to complete sign-in.
+
+                }
+
+                override fun onVerificationFailed(p0: FirebaseException) {
+                    Log.d("jarayon", "onVerificationFailed: $p0")
+                }
+
+                // ...
+            })
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+        // Force reCAPTCHA flow
+        FirebaseAuth.getInstance().firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
+
+
 
         binding.phoneRegister.addTextChangedListener {
             val phoneNumber = it.toString()

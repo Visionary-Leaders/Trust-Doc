@@ -83,14 +83,15 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/phoneInput"
             android:layout_width="match_parent"
+            app:prefixText="+998"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_height="match_parent">
 
-            <com.vicmikhailau.maskededittext.MaskedEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phone_login"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/_998"
+                android:hint="+998 91 111 11 11"
 
                 android:inputType="phone"
                 android:textColor="@color/white_and_black"
@@ -99,8 +100,7 @@
                 app:expandedHintEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_user_name"
-                app:mask="@string/_998" />
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout_user_name" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

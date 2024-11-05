@@ -17,6 +17,7 @@ import com.trustio.importantdocuments.databinding.LoginPageBinding
 import com.trustio.importantdocuments.ui.activity.MainActivity
 import com.trustio.importantdocuments.utils.BaseFragment
 import com.trustio.importantdocuments.utils.animationTransaction
+import com.trustio.importantdocuments.utils.createPhoneNumberPlateEditText
 import com.trustio.importantdocuments.utils.isValidPhoneNumber
 import com.trustio.importantdocuments.utils.sanitizePhoneNumber
 import com.trustio.importantdocuments.utils.setSlideUp
@@ -35,10 +36,12 @@ class LoginPage : BaseFragment<LoginPageBinding>(LoginPageBinding::inflate) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         model.loginResponse.onEach {
             it?.onSuccess {
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 startActivity(intent)
+
                 requireActivity().finish()
 
             }
@@ -51,6 +54,8 @@ class LoginPage : BaseFragment<LoginPageBinding>(LoginPageBinding::inflate) {
 
     override fun onViewCreate(savedInstanceState: Bundle?) {
         initClicks()
+        createPhoneNumberPlateEditText(binding.phoneLogin,binding.phoneInput)
+
 //        initPhone()
         setupAnimToViews()
     }

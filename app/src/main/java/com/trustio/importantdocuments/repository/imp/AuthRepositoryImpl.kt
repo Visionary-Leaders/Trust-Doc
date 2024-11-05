@@ -42,10 +42,13 @@ class AuthRepositoryImpl @Inject constructor(
     override fun sendOtp(phoneNumber: String, activity: Activity)=  callbackFlow <ResultApp> {
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                Log.d("tekshirish", "onVerificationFailed: ${credential.smsCode}")
+
                 trySend(ResultApp.CodeSent("123"))
             }
 
             override fun onVerificationFailed(exception: FirebaseException) {
+                Log.d("tekshirish", "onVerificationFailed: ${exception.message}")
                 trySend(ResultApp.CodeSent("123"))
             }
 
@@ -53,6 +56,7 @@ class AuthRepositoryImpl @Inject constructor(
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken
             ) {
+                Log.d("tekshirish", "onVerificationFailed: $verificationId and $token")
 
                 trySend(ResultApp.CodeSent(verificationId))
             }
