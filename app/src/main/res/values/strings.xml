@@ -40,4 +40,8 @@
     <string name="logo">Logo</string>
     <string name="search_file">Search File</string>
     <string name="search_folder">Search Folder</string>
+    <string name="add_file">Add File</string>
+    <string name="add_folder">Add Folder</string>
+    <string name="choose_add_type">Choose Add Type</string>
+    <string name="enter_folder_name">Enter Folder Name</string>
 </resources>

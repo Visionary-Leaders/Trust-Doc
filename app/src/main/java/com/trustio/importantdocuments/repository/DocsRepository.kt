@@ -7,6 +7,6 @@ import com.trustio.importantdocuments.utils.ResultApp
 import kotlinx.coroutines.flow.Flow
 
 interface DocsRepository {
-   suspend fun addCollection(collectionRequest: CollectionRequest): Flow<Result<CollectionAddResponse>>
+    fun addCollection(collectionRequest: CollectionRequest): Flow<Result<CollectionAddResponse>>
    suspend fun getCollections():Flow<Result<SectionsResponse>>
 }
