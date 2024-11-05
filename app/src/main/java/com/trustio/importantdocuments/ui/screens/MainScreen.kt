@@ -28,7 +28,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
             showSnack(binding.root.rootView,it)
         }
         model.collectionAddedResponse.observe(this){
-            showSnack(binding.root.rootView,it.message)
+            showSnack(binding.root.rootView,"Folder added successfully")
             setupBottomNavigation()
         }
     }

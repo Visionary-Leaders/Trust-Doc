@@ -9,10 +9,12 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="@dimen/_70sdp"
+        android:layout_width="wrap_content"
+
+        android:padding="@dimen/_10sdp"
+        app:cardBackgroundColor="@color/card_background"
         android:layout_height="@dimen/_70sdp"
         android:layout_marginTop="@dimen/_20sdp"
-        app:cardBackgroundColor="#578626BA"
         app:cardCornerRadius="@dimen/_8sdp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,19 +28,21 @@
             android:orientation="vertical">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="@dimen/_34sdp"
-                android:layout_height="@dimen/_34sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
 
                 android:layout_gravity="center"
+                app:tint="@color/colorPrimary"
                 app:srcCompat="@drawable/folder_big" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="@dimen/_16ssp"
                 android:fontFamily="@font/urbanist_bold"
                 android:text="@string/add_folder"
-                android:textColor="@color/white" />
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
@@ -51,8 +55,8 @@
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_10sdp"
         android:fontFamily="@font/urbanist_bold"
-        android:textColor="@color/only_black"
-        android:textColorHint="@color/only_black"
+        android:textColor="@color/whiteGray"
+        android:textColorHint="@color/whiteGray"
 
         android:background="@drawable/button_background_selected"
         android:hint="@string/enter_folder_name"
@@ -64,7 +68,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_50sdp"
+        android:layout_height="@dimen/_45sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginHorizontal="@dimen/_8sdp"
         android:orientation="horizontal"
