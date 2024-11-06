@@ -20,6 +20,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -28,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
+import com.trustio.importantdocuments.data.remote.request.FileUploadRequest
 import com.trustio.importantdocuments.data.remote.response.section.SectionsResponseItem
 import com.trustio.importantdocuments.databinding.MainScreenBinding
 import com.trustio.importantdocuments.ui.screens.adapter.BottomNavAdapter
@@ -43,6 +45,7 @@ import java.io.File
 @AndroidEntryPoint
 class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
     private val model by viewModels<HomeScreenViewModelImp>()
+    private var selectedSection: SectionsResponseItem? = null
     private val adapter by lazy { BottomNavAdapter(requireActivity()) }
     // Image picker result launcher
     private val getImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -56,6 +59,13 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
                 println("File: $file")
                 println("Size: $size bytes")
                 println("File Type: $fileType")
+                model.uploadFile(FileUploadRequest(
+                    selectedSection?.id!!,
+                    file!!.toUri().toString(),
+                    file.name,
+                    fileType!!,
+                    size.toString().toInt()
+                ))
 
             }
         }
@@ -68,6 +78,9 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
             PERMISSION_REQUEST_CODE
         )
+        model.fileUploadRequest.observe(this) {
+            showSnack(binding.root.rootView, "File Uploaded Successfully")
+        }
         model.errorResponse.observe(this) {
             showSnack(binding.root.rootView, it)
         }
@@ -109,6 +122,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
     @SuppressLint("MissingInflatedId")
     private fun showChooseFileTypeSheet(data: SectionsResponseItem) {
+        selectedSection=data
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.choose_file_type_sheet, null)
 
@@ -136,14 +150,14 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         bottomSheetDialog.show()
     }
 
-    fun getFileDetailsFromUri(uri: Uri): Triple<File?, Long?, String?>? {
+    private fun getFileDetailsFromUri(uri: Uri): Triple<File?, Long?, String?>? {
         if (uri.scheme == "file") {
             val file = File(uri.path ?: return null)
 
             val fileType = getFileExtension(file)
-            val fileSizeInMB = file.length().toDouble() / (1024 * 1024) // Fayl hajmi MBda
+            val fileSize = file.length()
 
-            return Triple(file, fileSizeInMB.toLong(), fileType)
+            return Triple(file, fileSize, fileType)
         } else {
             return null
         }
