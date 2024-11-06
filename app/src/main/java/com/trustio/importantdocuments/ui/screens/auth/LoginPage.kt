@@ -21,6 +21,7 @@ import com.trustio.importantdocuments.utils.createPhoneNumberPlateEditText
 import com.trustio.importantdocuments.utils.isValidPhoneNumber
 import com.trustio.importantdocuments.utils.sanitizePhoneNumber
 import com.trustio.importantdocuments.utils.setSlideUp
+import com.trustio.importantdocuments.utils.showSnack
 import com.trustio.importantdocuments.utils.slideStart
 import com.trustio.importantdocuments.utils.slideTop
 import com.trustio.importantdocuments.utils.slideUp
@@ -46,8 +47,7 @@ class LoginPage : BaseFragment<LoginPageBinding>(LoginPageBinding::inflate) {
 
             }
             it?.onFailure {
-                snackString(it.message)
-                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                showSnack(binding.root,it.message.toString())
             }
         }.launchIn(lifecycleScope)
     }

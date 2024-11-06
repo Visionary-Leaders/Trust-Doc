@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://sobirjonabdurasulov011.pythonanywhere.com/"
+    private const val BASE_URL = "https://sobirjon011.pythonanywhere.com/"
 
     @[Provides Singleton]
     fun provideOkHttpClient(

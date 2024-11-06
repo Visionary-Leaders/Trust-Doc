@@ -4,4 +4,4 @@ data class LoginResponse(
 )
 
 data class LoginErrorResponse(
-    val message: String?)
+    val message: String)

@@ -103,19 +103,25 @@ class AuthRepositoryImpl @Inject constructor(
         val response = apiService.loginUser(request)
         Log.d("ERROR", "handleLogin: ${response.errorBody()?.string()}")
         Log.d("ERROR", "handleLogin: ${response.code()}")
-        return when {
-            response.isSuccessful -> response.body()?.let {
-                appReference.password =request.password
-                appReference.phone =request.phone_number
-                apiService.getFullToken(TokenRequest(request.password,request.phone_number))?.let { data ->
-                    if (data.isSuccessful) {
-                        val tokenResponse =data.body()
-                        appReference.token ="Bearer ${tokenResponse!!.access}"
+        Log.d("ERROR", "handleLogin: ${parseLoginErr(response.errorBody()?.string())}")
+        if (request.phone_number.isEmpty() || request.password.isEmpty()) {
+            return Result.failure(Exception("Empty phone number or password"))
+        }
+        else {
+            return when {
+                response.isSuccessful -> response.body()?.let {
+                    appReference.password =request.password
+                    appReference.phone =request.phone_number
+                    apiService.getFullToken(TokenRequest(request.password,request.phone_number)).let { data ->
+                        if (data.isSuccessful) {
+                            val tokenResponse =data.body()
+                            appReference.token ="Bearer ${tokenResponse!!.access}"
+                        }
                     }
-                }
-                Result.success(it)
-            } ?: Result.failure(Exception("Empty response body"))
-            else -> Result.failure(parseLoginErr(response.errorBody()?.string()))
+                    Result.success(it)
+                } ?: Result.failure(Exception("Empty response body"))
+                else -> Result.failure(parseLoginErr(response.errorBody()?.string()))
+            }
         }
     }
 
@@ -141,6 +147,7 @@ class AuthRepositoryImpl @Inject constructor(
                     Result.success(it)
                 } ?: Result.failure(Exception("Empty response body"))
             } else {
+                print(response.errorBody()?.string())
                 Result.failure(parseError(response.errorBody()?.string()))
             }
         } catch (e: Exception) {
@@ -153,7 +160,7 @@ class AuthRepositoryImpl @Inject constructor(
         val errorResponse = errorBody?.let {
             Gson().fromJson(it, ErrorResponse::class.java)
         }
-        val errorMessage = errorResponse?.email?.firstOrNull() ?: "Unknown error"
+        val errorMessage = errorResponse?.email?.firstOrNull()
         return Exception(errorMessage)
     }
 
@@ -161,7 +168,7 @@ class AuthRepositoryImpl @Inject constructor(
         val errorResponse = errorBody?.let {
             Gson().fromJson(it, LoginErrorResponse::class.java)
         }
-        val errorMessage = errorResponse?.message ?: "Unknown error"
+        val errorMessage = errorResponse?.message
         return Exception(errorMessage)
     }
 }

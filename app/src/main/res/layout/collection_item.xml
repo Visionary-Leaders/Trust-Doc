@@ -1,5 +1,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:clickable="true"
     android:layout_height="@dimen/_55sdp"
     android:layout_marginVertical="@dimen/_4sdp"
     app:cardCornerRadius="@dimen/_12sdp"
