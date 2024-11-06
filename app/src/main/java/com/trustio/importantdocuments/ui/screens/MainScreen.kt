@@ -50,13 +50,13 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
             val imageUri: Uri? = result.data?.data
             Log.d("HANDLE picker", "FILE:${imageUri}: ")
             showSnack(binding.root, "File format: $imageUri")
-            // Handle the image URI (e.g., display it in an ImageView or upload it)
             imageUri?.let {
                 val uri = it
-                uri?.let {
-                    val (fileFormat, fileSizeMB) = getFileDetails(requireContext(),it)
-                    showSnack(binding.root, "File format: $fileFormat\nFile size: $fileSizeMB MB")
-                }
+                val (file, size, fileType) = getFileDetailsFromUri(uri) ?: Triple(null, null, null)
+                println("File: $file")
+                println("Size: $size bytes")
+                println("File Type: $fileType")
+
             }
         }
     }
@@ -135,58 +135,22 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.show()
     }
-    private fun openImagePicker() {
-//        ImagePicker.with(requireActivity())
-//            .galleryOnly().createIntentFromDialog {
-//                val uri = it.data
-//                uri?.let {
-//                    val (fileFormat, fileSizeMB) = getFileDetails(it)
-//                }
-//            }
 
-    }
-    // Function to get file details from the URI
-    private fun getFileDetails(context: Context, uri: Uri): Pair<String, Float> {
-        val contentResolver: ContentResolver = context.contentResolver
-        var fileSize: Float = 0.0f
-        var fileFormat: String = "unknown"
+    fun getFileDetailsFromUri(uri: Uri): Triple<File?, Long?, String?>? {
+        if (uri.scheme == "file") {
+            val file = File(uri.path ?: return null)
 
-        // Get file size and format using a ContentResolver query
-        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
-            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val fileType = getFileExtension(file)
+            val fileSizeInMB = file.length().toDouble() / (1024 * 1024) // Fayl hajmi MBda
 
-            if (cursor.moveToFirst()) {
-                // Retrieve file size in MB
-                val sizeBytes = cursor.getLong(sizeIndex)
-                fileSize = sizeBytes / (1024 * 1024).toFloat()
-
-                // Retrieve file format
-                val displayName = cursor.getString(nameIndex)
-                fileFormat = displayName.substringAfterLast('.', "unknown")
-            }
+            return Triple(file, fileSizeInMB.toLong(), fileType)
+        } else {
+            return null
         }
-
-        return fileFormat to fileSize
     }
 
-    private fun getFilePathFromUri(uri: Uri): String? {
-        val cursor = requireContext().contentResolver.query(uri, arrayOf(MediaStore.Images.Media.DATA), null, null, null)
-        cursor?.let {
-            if (it.moveToFirst()) {
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                val filePath = it.getString(columnIndex)
-                it.close()
-                return filePath
-            }
-            it.close()
-        }
-        return null
-    }
-
-    private fun getFileFormat(uri: Uri): String {
-        val mimeType = requireContext().contentResolver.getType(uri)
-        return mimeType ?: "Unknown"
+    private fun getFileExtension(file: File): String? {
+        return file.extension.takeIf { it.isNotEmpty() }
     }
 
     @SuppressLint("MissingInflatedId")
