@@ -90,11 +90,11 @@ fun convertToPlainPhoneNumber(maskedPhoneNumber: String): String {
     return maskedPhoneNumber.filter { it.isDigit() || it == '+' }
 }
 fun sanitizePhoneNumber(phoneNumber: String): String {
-    return phoneNumber.replace("[()\\s-]".toRegex(), "")
+    return phoneNumber.replace("[()\\s ]".toRegex(), "")
 }
 
 fun isValidPhoneNumber(phoneNumber: String): Boolean {
-    val regex = Regex("""\+998 \(\d{2}\) \d{3}-\d{2}-\d{2}""")
+    val regex = Regex("""\+998 \(\d{2}\) \d{3} \d{2} \d{2}""")
     return regex.matches(phoneNumber)
 }
 

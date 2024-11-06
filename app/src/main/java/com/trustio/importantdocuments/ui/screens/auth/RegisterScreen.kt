@@ -22,6 +22,7 @@ import com.trustio.importantdocuments.databinding.RegisterPageBinding
 import com.trustio.importantdocuments.utils.BaseFragment
 import com.trustio.importantdocuments.utils.ResultApp
 import com.trustio.importantdocuments.utils.animationTransaction
+import com.trustio.importantdocuments.utils.createPhoneNumberPlateEditText
 import com.trustio.importantdocuments.utils.gone
 import com.trustio.importantdocuments.utils.isValidPhoneNumber
 import com.trustio.importantdocuments.utils.sanitizePhoneNumber
@@ -100,50 +101,48 @@ class RegisterScreen : BaseFragment<RegisterPageBinding>(RegisterPageBinding::in
 
     override fun onViewCreate(savedInstanceState: Bundle?) {
         initClicks()
+        createPhoneNumberPlateEditText(binding.phoneRegister,binding.textInputLayoutPhone)
 
-        val phoneNumber = "+998903640804"
-
-        val firebaseAuth = FirebaseAuth.getInstance()
-        val firebaseAuthSettings = firebaseAuth.firebaseAuthSettings
-
-
-        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
-            .setPhoneNumber(phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(requireActivity())
-            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    // Instant verification is applied and a credential is directly returned.
-                    // ...
-                }
-                override fun onCodeSent(
-                    verificationId: String,
-                    forceResendingToken: PhoneAuthProvider.ForceResendingToken,
-                ) {
-                    // Save the verification id somewhere
-                    // ...
-                    Log.d("jarayon", "onCodeSent: $verificationId")
-                    // The corresponding whitelisted code above should be used to complete sign-in.
-
-                }
-
-                override fun onVerificationFailed(p0: FirebaseException) {
-                    Log.d("jarayon", "onVerificationFailed: $p0")
-                }
-
-                // ...
-            })
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
-        // Force reCAPTCHA flow
+//        val phoneNumber = "+998943017410"
+//
+//        val firebaseAuth = FirebaseAuth.getInstance()
+//        val firebaseAuthSettings = firebaseAuth.firebaseAuthSettings
+//
+//
+//        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
+//            .setPhoneNumber(phoneNumber)
+//            .setTimeout(60L, TimeUnit.SECONDS)
+//            .setActivity(requireActivity())
+//            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+//                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+//                    // Instant verification is applied and a credential is directly returned.
+//                    // ...
+//                }
+//                override fun onCodeSent(
+//                    verificationId: String,
+//                    forceResendingToken: PhoneAuthProvider.ForceResendingToken,
+//                ) {
+//                    // Save the verification id somewhere
+//                    // ...
+//                    Log.d("jarayon", "onCodeSent: $verificationId")
+//                    // The corresponding whitelisted code above should be used to complete sign-in.
+//
+//                }
+//
+//                override fun onVerificationFailed(p0: FirebaseException) {
+//                    Log.d("jarayon", "onVerificationFailed: $p0")
+//                }
+//
+//                // ...
+//            })
+//            .build()
+//        PhoneAuthProvider.verifyPhoneNumber(options)
+//        // Force reCAPTCHA flow
         FirebaseAuth.getInstance().firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
+//
 
 
 
-        binding.phoneRegister.addTextChangedListener {
-            val phoneNumber = it.toString()
-            binding.clickRegister.isEnabled = isValidPhoneNumber(phoneNumber)
-        }
     }
 
     private fun initClicks() {

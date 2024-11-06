@@ -31,6 +31,9 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
             binding.collectionProgress.gone()
             LocalData.list.clear()
             LocalData.list.addAll(response!!)
+            adapter.setItemClickListener {
+
+            }
             binding.collectionRv.visible()
             binding.collectionRv.adapter = adapter
             adapter.submitList(response)

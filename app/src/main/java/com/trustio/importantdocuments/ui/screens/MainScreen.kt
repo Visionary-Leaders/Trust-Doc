@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
+import com.trustio.importantdocuments.data.remote.response.section.SectionsResponseItem
 import com.trustio.importantdocuments.databinding.MainScreenBinding
 import com.trustio.importantdocuments.ui.screens.adapter.BottomNavAdapter
 import com.trustio.importantdocuments.ui.screens.home.adapter.CollectionAdapter
@@ -43,7 +44,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
                 R.layout.folder_bottom_sheet, null
             )
 
-            val normalMapOption = view.findViewById<MaterialCardView>(R.id.normal_map_option)
+            val normalMapOption = view.findViewById<MaterialCardView>(R.id.choose_img_option)
             val satelliteMapOption = view.findViewById<MaterialCardView>(R.id.satellite_map_option)
             val buttonClose = view.findViewById<FrameLayout>(R.id.button_close)
             normalMapOption.setOnClickListener {
@@ -52,7 +53,8 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
             }
             satelliteMapOption.setOnClickListener {
-
+                bottomSheetDialog.dismiss()
+                showChooseFolderSheet()
             }
             buttonClose.setOnClickListener {
                 bottomSheetDialog.dismiss()
@@ -65,16 +67,48 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         setupBottomNavigation()
     }
 
+    @SuppressLint("MissingInflatedId")
+    private fun showChooseFileTypeSheet(data: SectionsResponseItem) {
+        val message =data.name
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(
+            R.layout.choose_file_type_sheet, null
+        )
 
-    private fun showChooseFolderSheet(){
+        val pdfOption = view.findViewById<MaterialCardView>(R.id.choose_pdf)
+        val docOption = view.findViewById<MaterialCardView>(R.id.choose_doc)
+        val imgOption = view.findViewById<MaterialCardView>(R.id.choose_img_option)
+        val buttonClose = view.findViewById<FrameLayout>(R.id.button_close)
+        pdfOption.setOnClickListener {
+        }
+        imgOption.setOnClickListener {
+
+        }
+        docOption.setOnClickListener {
+        }
+        buttonClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun showChooseFolderSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(
             R.layout.choose_folder_for_add_file, null
         )
         val foldersRv = view.findViewById<RecyclerView>(R.id.foldersRv)
-        val adapter= CollectionAdapter()
-        foldersRv.adapter=adapter
+        val adapter = CollectionAdapter(true)
+        foldersRv.adapter = adapter
         adapter.submitList(LocalData.list)
+        adapter.setItemClickListener {
+            showChooseFileTypeSheet(it)
+        }
+
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
 
     }
     private fun showAddFolderSheet(){

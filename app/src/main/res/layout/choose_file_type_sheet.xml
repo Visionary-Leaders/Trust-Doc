@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_map_type"
@@ -25,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/choose_add_type"
+            android:text="@string/choose_upload_type"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
 
@@ -65,7 +66,8 @@
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/card_background">
+            app:cardBackgroundColor="@color/card_background"
+            tools:ignore="DuplicateIds">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="@dimen/_20sdp"
@@ -73,7 +75,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/folder"
+                android:src="@drawable/image_ic"
                 app:tint="@color/colorPrimary" />
 
             <LinearLayout
@@ -88,7 +90,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/add_folder"
+                    android:text="@string/upload_img"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/choose_pdf"
+            android:layout_width="0dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/card_background">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/pdf_ic"
+                app:tint="@color/colorPrimary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/card_intro_color"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_5sdp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/upload_pdf"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             </LinearLayout>
@@ -97,7 +137,7 @@
 
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/satellite_map_option"
+            android:id="@+id/choose_doc"
             android:layout_width="0dp"
             android:layout_height="@dimen/_100sdp"
             android:background="?selectableItemBackgroundBorderless"
@@ -128,7 +168,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_file"
+
+                    android:text="@string/upload_doc"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             </LinearLayout>

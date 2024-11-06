@@ -45,4 +45,8 @@
     <string name="choose_add_type">Choose Add Type</string>
     <string name="enter_folder_name">Enter Folder Name</string>
     <string name="choose_folder">Choose Folder</string>
+    <string name="upload_pdf">Upload Pdf</string>
+    <string name="upload_img">Upload Img</string>
+    <string name="upload_doc">Document</string>
+    <string name="choose_upload_type">Choose Upload Type</string>
 </resources>

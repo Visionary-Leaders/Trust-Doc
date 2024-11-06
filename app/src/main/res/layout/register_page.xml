@@ -36,30 +36,29 @@
         android:id="@+id/textInputLayoutPhone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:prefixText="+998"
         android:layout_marginTop="@dimen/_12sdp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginHorizontal="@dimen/_20sdp"
         app:boxBackgroundMode="outline"
-        app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
-        <com.vicmikhailau.maskededittext.MaskedEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/phone_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/_998"
+            android:hint="+998 91 111 11 11"
+
             android:inputType="phone"
             android:textColorHint="#787171"
-            android:textSize="@dimen/_13sdp"
-            app:mask="+998 (##) ###-##-##" />
+            android:textSize="@dimen/_13sdp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/clickRegister"
-        android:enabled="false"
         android:layout_width="0dp"
         android:layout_height="@dimen/_44sdp"
         android:layout_marginLeft="@dimen/_28sdp"
