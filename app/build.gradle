@@ -154,6 +154,13 @@ dependencies {
     // InstaPicker
     implementation 'com.github.dhaval2404:imagepicker:2.1'
 
+    // Pdf Picker
+    implementation 'io.github.chochanaresh:filepicker:0.1.9'
+
+    //Ml Kit Doc Scanning
+    implementation 'com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1'
+
+
 
 
 }

@@ -58,6 +58,7 @@ class DocsRepositoryImp @Inject constructor(private val docApi: DocApi,private v
         emit(handleUploadFile(token, section, fileUri, fileName, fileSize, fileType))
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private suspend  fun handleUploadFile(
         token: String,
         section: String,
@@ -79,7 +80,7 @@ class DocsRepositoryImp @Inject constructor(private val docApi: DocApi,private v
         )
 
       val data  =docApi.uploadFile(
-            authToken = "$token",
+            authToken = token,
             section = sectionPart,
             file = filePart,
             fileName = fileNamePart,
@@ -94,7 +95,7 @@ class DocsRepositoryImp @Inject constructor(private val docApi: DocApi,private v
                 if (getToken.isSuccessful) {
                     appReference.token = "Bearer ${getToken.body()?.access}"
                     val newResponse = docApi.uploadFile(
-                        authToken = "$token",
+                        authToken = "Bearer ${getToken.body()?.access}",
                         section = sectionPart,
                         file = filePart,
                         fileName = fileNamePart,

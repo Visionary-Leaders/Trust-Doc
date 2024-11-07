@@ -3,23 +3,18 @@ package com.trustio.importantdocuments.ui.screens
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Activity.RESULT_OK
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import android.widget.FrameLayout
-import android.widget.ImageView
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +22,13 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanner
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_PDF
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import com.nareshchocha.filepickerlibrary.ui.FilePicker
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadRequest
@@ -41,35 +43,126 @@ import com.trustio.importantdocuments.viewmodel.imp.HomeScreenViewModelImp
 import dagger.hilt.android.AndroidEntryPoint
 import nl.joery.animatedbottombar.AnimatedBottomBar
 import java.io.File
+import kotlin.math.log
 
 @AndroidEntryPoint
 class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
     private val model by viewModels<HomeScreenViewModelImp>()
-    private var selectedSection: SectionsResponseItem? = null
-    private val adapter by lazy { BottomNavAdapter(requireActivity()) }
-    // Image picker result launcher
-    private val getImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val imageUri: Uri? = result.data?.data
-            Log.d("HANDLE picker", "FILE:${imageUri}: ")
-            showSnack(binding.root, "File format: $imageUri")
-            imageUri?.let {
-                val uri = it
-                val (file, size, fileType) = getFileDetailsFromUri(uri) ?: Triple(null, null, null)
-                println("File: $file")
-                println("Size: $size bytes")
-                println("File Type: $fileType")
-                model.uploadFile(FileUploadRequest(
-                    selectedSection?.id!!,
-                    file!!.toUri().toString(),
-                    file.name,
-                    fileType!!,
-                    size.toString().toInt()
-                ))
+    private val PDF_PICKER_REQUEST_CODE = 1001
+    private var fileType = "application/pdf"
 
+    private val pickPdfLauncher =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+            val uriNew =displayPdfDetails(uri!!)
+//            uri?.let {
+            val (pdf, size, fileType) = getFileDetailsFromUri(requireContext(), uri!!) ?: Triple(null, null, null)
+////
+////                Log.d("PDFPicker", "File: $file, Size: $size bytes, File Type: $fileType")
+////
+////                println("File: $file")
+////                println("Size: $size bytes")
+////                println("File Type: $fileType")
+                model.uploadFile(
+                    FileUploadRequest(
+                        selectedSection?.id!!,
+                        pdf!!.toUri().toString(),
+                        pdf.name,
+                        fileType!!,
+                        size.toString().toInt()
+                    ))
+//            }
+            Log.d("GGG", "launch: pdf: $pdf, size: $size, fileType: $fileType")
+
+        }
+    private var scannerLauncher =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            val resultCode = result.resultCode
+            val result = GmsDocumentScanningResult.fromActivityResultIntent(result.data)
+            if (resultCode == Activity.RESULT_OK && result != null) {
+                result.pages?.let { pages ->
+                    for (page in pages) {
+                        val imageUri = pages.get(0).getImageUri()
+                        val (file, size, fileType) = getFileDetailsFromUri(imageUri) ?: Triple(
+                            null,
+                            null,
+                            null
+                        )
+                        showSnack(
+                            binding.root,
+                            "Image: $imageUri Image Type: $fileType, File: $file, Size: $size bytes"
+                        )
+                    }
+                }
+                result.pdf?.let { pdf ->
+                    val pdfUri = pdf.getUri()
+                    val (file, size, fileType) = getFileDetailsFromUri(pdfUri) ?: Triple(
+                        null,
+                        null,
+                        null
+                    )
+
+                    val pageCount = pdf.getPageCount()
+                    Log.d(
+                        "GGG",
+                        "Pdf page count: $pageCount, file: $file, size: $size, fileType: $fileType"
+                    )
+                    model.uploadFile(
+                        FileUploadRequest(
+                            selectedSection?.id!!,
+                            file!!.toUri().toString(),
+                            file.name,
+                            fileType!!,
+                            size.toString().toInt()
+                        )
+                    )
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                showSnack(binding.root, "Scanning cancelled")
+            } else {
+                showSnack(binding.root, "Scanning failed")
             }
         }
+    private var documentScannerClient: GmsDocumentScanner? = null
+
+
+    private var selectedSection: SectionsResponseItem? = null
+    private val adapter by lazy { BottomNavAdapter(requireActivity()) }
+    private val getImage =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val imageUri: Uri? = result.data?.data
+                Log.d("HANDLE picker", "FILE:${imageUri}: ")
+                showSnack(binding.root, "File format: $imageUri")
+                imageUri?.let {
+                    val uri = it
+                    val (file, size, fileType) = getFileDetailsFromUri(uri) ?: Triple(
+                        null,
+                        null,
+                        null
+                    )
+                    println("File: $file")
+                    println("Size: $size bytes")
+                    println("File Type: $fileType")
+                    model.uploadFile(
+                        FileUploadRequest(
+                            selectedSection?.id!!,
+                            file!!.toUri().toString(),
+                            file.name,
+                            fileType!!,
+                            size.toString().toInt()
+                        )
+                    )
+
+                }
+            }
+        }
+
+
+    private fun pickPdf() {
+        // Launch the PDF picker intent
+        pickPdfLauncher.launch(arrayOf("application/pdf"))
     }
+
     private val PERMISSION_REQUEST_CODE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +182,8 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
             setupBottomNavigation()
         }
     }
+
+    //
     @SuppressLint("InflateParams")
     override fun onViewCreate(savedInstanceState: Bundle?) {
         binding.fab.setOnClickListener {
@@ -122,23 +217,45 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
     @SuppressLint("MissingInflatedId")
     private fun showChooseFileTypeSheet(data: SectionsResponseItem) {
-        selectedSection=data
+        selectedSection = data
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.choose_file_type_sheet, null)
 
         val imgOption = view.findViewById<MaterialCardView>(R.id.choose_img_option)
+        val docOption = view.findViewById<MaterialCardView>(R.id.choose_doc)
+        val pdfOption = view.findViewById<MaterialCardView>(R.id.choose_pdf)
         val buttonClose = view.findViewById<FrameLayout>(R.id.button_close)
+        docOption.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            val options =
+                GmsDocumentScannerOptions.Builder().setGalleryImportAllowed(false).setPageLimit(2)
+                    .setResultFormats(RESULT_FORMAT_PDF).setScannerMode(SCANNER_MODE_FULL).build()
+
+            documentScannerClient = GmsDocumentScanning.getClient(options)
+
+            documentScannerClient?.getStartScanIntent(requireActivity())
+                ?.addOnSuccessListener { intentSender ->
+                    scannerLauncher.launch(IntentSenderRequest.Builder(intentSender).build())
+                }?.addOnFailureListener { e: Exception ->
+                }
+
+        }
+        pdfOption.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            pickPdf()
+//            FilePicker.Builder(requireActivity())
+//                .setPopUpConfig()
+//                .addPickDocumentFile()
+//                .build()
+
+        }
 
         imgOption.setOnClickListener {
             bottomSheetDialog.dismiss()
-             ImagePicker.with(this)
-                .crop()
-                .provider(ImageProvider.BOTH)
-                .galleryOnly()
-                .createIntent {
-                    getImage.launch(it)
+            ImagePicker.with(this).crop().provider(ImageProvider.BOTH).galleryOnly().createIntent {
+                getImage.launch(it)
 
-                }
+            }
 
         }
 
@@ -148,6 +265,56 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.show()
+    }
+
+    private fun displayPdfDetails(uri: Uri) :String{
+        val cursor = context?.contentResolver?.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                val fileName = it.getString(nameIndex) ?: "Unknown"
+                Log.d("GG", "displayPdfDetails: $fileName   ")
+                println("Selected PDF: $fileName\\nURI: $uri")
+                return uri.toString()
+            }
+        } ?: Log.e("PDFPicker", "Unable to retrieve PDF details")
+        return  ""
+    }
+
+   private fun getFileDetailsFromUri(context: Context, uri: Uri): Triple<File?, Long?, String?>? {
+        // Get file size and name from the URI using ContentResolver
+        var fileSize: Long? = null
+        var fileName: String? = null
+        var fileType: String? = null
+
+        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (sizeIndex != -1) {
+                    fileSize = cursor.getLong(sizeIndex)
+                }
+                if (nameIndex != -1) {
+                    fileName = cursor.getString(nameIndex)
+                }
+            }
+        }
+
+        // Get the file type (MIME type) from the ContentResolver
+        fileType = context.contentResolver.getType(uri)
+
+        // If the fileName is not null, use it to create a File object
+        val tempFile = fileName?.let {
+            File(context.cacheDir, it).apply {
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+            }
+        }
+
+        return Triple(tempFile, fileSize, fileType)
     }
 
     private fun getFileDetailsFromUri(uri: Uri): Triple<File?, Long?, String?>? {
@@ -162,6 +329,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
             return null
         }
     }
+
 
     private fun getFileExtension(file: File): String? {
         return file.extension.takeIf { it.isNotEmpty() }
@@ -210,6 +378,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         bottomSheetDialog.show()
 
     }
+
 
     private fun setupBottomNavigation() {
         val mainViewPager = binding.navHost
