@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -28,7 +27,6 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
-import com.nareshchocha.filepickerlibrary.ui.FilePicker
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadRequest
@@ -38,39 +36,31 @@ import com.trustio.importantdocuments.ui.screens.adapter.BottomNavAdapter
 import com.trustio.importantdocuments.ui.screens.home.adapter.CollectionAdapter
 import com.trustio.importantdocuments.utils.BaseFragment
 import com.trustio.importantdocuments.utils.LocalData
+import com.trustio.importantdocuments.utils.showNetworkDialog
 import com.trustio.importantdocuments.utils.showSnack
 import com.trustio.importantdocuments.viewmodel.imp.HomeScreenViewModelImp
 import dagger.hilt.android.AndroidEntryPoint
 import nl.joery.animatedbottombar.AnimatedBottomBar
 import java.io.File
-import kotlin.math.log
 
 @AndroidEntryPoint
 class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
     private val model by viewModels<HomeScreenViewModelImp>()
-    private val PDF_PICKER_REQUEST_CODE = 1001
-    private var fileType = "application/pdf"
 
     private val pickPdfLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
-            val uriNew =displayPdfDetails(uri!!)
-//            uri?.let {
-            val (pdf, size, fileType) = getFileDetailsFromUri(requireContext(), uri!!) ?: Triple(null, null, null)
-////
-////                Log.d("PDFPicker", "File: $file, Size: $size bytes, File Type: $fileType")
-////
-////                println("File: $file")
-////                println("Size: $size bytes")
-////                println("File Type: $fileType")
-                model.uploadFile(
-                    FileUploadRequest(
-                        selectedSection?.id!!,
-                        pdf!!.toUri().toString(),
-                        pdf.name,
-                        fileType!!,
-                        size.toString().toInt()
-                    ))
-//            }
+            val (pdf, size, fileType) = getFileDetailsFromUri(
+                requireContext(), uri!!
+            ) ?: Triple(null, null, null)
+            model.uploadFile(
+                FileUploadRequest(
+                    selectedSection?.id!!,
+                    pdf!!.toUri().toString(),
+                    pdf.name,
+                    fileType!!,
+                    size.toString().toInt()
+                )
+            )
             Log.d("GGG", "launch: pdf: $pdf, size: $size, fileType: $fileType")
 
         }
@@ -158,10 +148,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         }
 
 
-    private fun pickPdf() {
-        // Launch the PDF picker intent
-        pickPdfLauncher.launch(arrayOf("application/pdf"))
-    }
+
 
     private val PERMISSION_REQUEST_CODE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -171,6 +158,9 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
             PERMISSION_REQUEST_CODE
         )
+        model.noInternetLiveData.observe(this ){
+            showNetworkDialog(requireActivity(),null)
+        }
         model.fileUploadRequest.observe(this) {
             showSnack(binding.root.rootView, "File Uploaded Successfully")
         }
@@ -214,6 +204,9 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
         setupBottomNavigation()
     }
+    private fun pickPdf() {
+        pickPdfLauncher.launch(arrayOf("application/pdf"))
+    }
 
     @SuppressLint("MissingInflatedId")
     private fun showChooseFileTypeSheet(data: SectionsResponseItem) {
@@ -243,18 +236,12 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         pdfOption.setOnClickListener {
             bottomSheetDialog.dismiss()
             pickPdf()
-//            FilePicker.Builder(requireActivity())
-//                .setPopUpConfig()
-//                .addPickDocumentFile()
-//                .build()
-
         }
 
         imgOption.setOnClickListener {
             bottomSheetDialog.dismiss()
             ImagePicker.with(this).crop().provider(ImageProvider.BOTH).galleryOnly().createIntent {
                 getImage.launch(it)
-
             }
 
         }
@@ -267,22 +254,9 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         bottomSheetDialog.show()
     }
 
-    private fun displayPdfDetails(uri: Uri) :String{
-        val cursor = context?.contentResolver?.query(uri, null, null, null, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                val fileName = it.getString(nameIndex) ?: "Unknown"
-                Log.d("GG", "displayPdfDetails: $fileName   ")
-                println("Selected PDF: $fileName\\nURI: $uri")
-                return uri.toString()
-            }
-        } ?: Log.e("PDFPicker", "Unable to retrieve PDF details")
-        return  ""
-    }
+
 
    private fun getFileDetailsFromUri(context: Context, uri: Uri): Triple<File?, Long?, String?>? {
-        // Get file size and name from the URI using ContentResolver
         var fileSize: Long? = null
         var fileName: String? = null
         var fileType: String? = null
@@ -300,10 +274,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
             }
         }
 
-        // Get the file type (MIME type) from the ContentResolver
         fileType = context.contentResolver.getType(uri)
-
-        // If the fileName is not null, use it to create a File object
         val tempFile = fileName?.let {
             File(context.cacheDir, it).apply {
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->

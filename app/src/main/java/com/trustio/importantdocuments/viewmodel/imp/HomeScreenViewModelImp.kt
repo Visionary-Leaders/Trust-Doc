@@ -11,6 +11,7 @@ import com.trustio.importantdocuments.data.remote.request.FileUploadResponse
 import com.trustio.importantdocuments.data.remote.response.CollectionAddResponse
 import com.trustio.importantdocuments.data.remote.response.section.SectionsResponse
 import com.trustio.importantdocuments.repository.imp.DocsRepositoryImp
+import com.trustio.importantdocuments.utils.hasConnection
 import com.trustio.importantdocuments.viewmodel.HomeScreenViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,51 +26,65 @@ class HomeScreenViewModelImp @Inject constructor(private val repo:DocsRepository
     override val collectionList: MutableLiveData<SectionsResponse> = MutableLiveData()
     override val fileUploadRequest: MutableLiveData<FileUploadResponse> = MutableLiveData()
     override val errorResponse: MutableLiveData<String> = MutableLiveData()
+    override val noInternetLiveData: MutableLiveData<Unit> = MutableLiveData()
+
     init {
         viewModelScope.launch {
             loadSections()
         }
     }
     override suspend fun loadSections() {
-        repo.getCollections().onEach {
-            it.onFailure {
-                errorResponse.value=it.message.toString()
+      if (hasConnection()){
+          repo.getCollections().onEach {
+              it.onFailure {
+                  errorResponse.value=it.message.toString()
 
-            }
-            it.onSuccess {
-                collectionList.value=it
-            }
-        }.launchIn(viewModelScope)
+              }
+              it.onSuccess {
+                  collectionList.value=it
+              }
+          }.launchIn(viewModelScope)
+      }else {
+          noInternetLiveData .value =Unit
+      }
     }
 
     override  fun addCollection(collectionRequest: CollectionRequest) {
-        repo.addCollection(collectionRequest).onEach {
-            it.onFailure {
-                errorResponse.value=it.message.toString()
-            }
-            it.onSuccess {
-                collectionAddedResponse.value=it
-            }
-        }.launchIn(viewModelScope)
+      if (hasConnection()) {
+          repo.addCollection(collectionRequest).onEach {
+              it.onFailure {
+                  errorResponse.value=it.message.toString()
+              }
+              it.onSuccess {
+                  collectionAddedResponse.value=it
+              }
+          }.launchIn(viewModelScope)
+      }else {
+          noInternetLiveData .value =Unit
+      }
     }
 
     override fun uploadFile(request: FileUploadRequest) {
-        viewModelScope.launch {
-            repo.uploadFile(
-                appReference.token!!,
-                request.section.toString(),
-                request.file.toUri(),
-                request.file_name,
-                request.file_size,
-                request.file_type
-            ).onEach {
-                it.onSuccess {
-                    fileUploadRequest.value=it
-                }
-                it.onFailure {
-                    errorResponse.value=it.message
-                }
-            }.launchIn(viewModelScope)
+        if (hasConnection()) {
+            viewModelScope.launch {
+                repo.uploadFile(
+                    appReference.token!!,
+                    request.section.toString(),
+                    request.file.toUri(),
+                    request.file_name,
+                    request.file_size,
+                    request.file_type
+                ).onEach {
+                    it.onSuccess {
+                        fileUploadRequest.value=it
+                    }
+                    it.onFailure {
+                        errorResponse.value=it.message
+                    }
+                }.launchIn(viewModelScope)
+            }
+        }else {
+            noInternetLiveData .value =Unit
         }
     }
 }

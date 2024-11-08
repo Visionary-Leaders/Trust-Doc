@@ -13,6 +13,7 @@ interface HomeScreenViewModel {
     val collectionList:MutableLiveData<SectionsResponse>
     val fileUploadRequest:MutableLiveData<FileUploadResponse>
     val errorResponse :MutableLiveData<String>
+    val noInternetLiveData:MutableLiveData<Unit>
     suspend fun loadSections()
      fun addCollection(collectionRequest: CollectionRequest)
      fun uploadFile (request: FileUploadRequest)

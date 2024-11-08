@@ -160,6 +160,9 @@ dependencies {
     //Ml Kit Doc Scanning
     implementation 'com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1'
 
+    //Dialog
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+
 
 
 
