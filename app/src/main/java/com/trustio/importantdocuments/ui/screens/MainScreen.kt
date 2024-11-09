@@ -366,6 +366,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
                 when (newIndex) {
                     0 -> {
                         mainViewPager.currentItem=0
+                        //
 
                     }
                     1 -> {
