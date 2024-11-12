@@ -24,6 +24,18 @@ fun initActivity(a: Activity) {
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
 }
+fun List<Long>.convertBytesToMb(): Double {
+    // Sum all values in the list, assumed to be in bytes
+    val totalBytes = this.sum()
+
+    // Convert the total bytes to megabytes (1 MB = 1048576 bytes)
+    return totalBytes / 1048576.0
+}
+
+fun Int.convertBytesToMb(): Double {
+    // Convert bytes to megabytes (1 MB = 1048576 bytes)
+    return this / 1048576.0
+}
 
 fun hideKeyboard(view: View) {
     val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

@@ -47,6 +47,10 @@ import java.io.File
 class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
     private val model by viewModels<HomeScreenViewModelImp>()
 
+
+
+    private var selectedSection: SectionsResponseItem? = null
+
     private val pickPdfLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
             val (pdf, size, fileType) = getFileDetailsFromUri(
@@ -57,13 +61,15 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
                     selectedSection?.id!!,
                     pdf!!.toUri().toString(),
                     pdf.name,
-                    fileType!!,
+                    "pdf"!!,
                     size.toString().toInt()
                 )
             )
             Log.d("GGG", "launch: pdf: $pdf, size: $size, fileType: $fileType")
 
         }
+
+
     private var scannerLauncher =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             val resultCode = result.resultCode
@@ -114,15 +120,11 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
         }
     private var documentScannerClient: GmsDocumentScanner? = null
 
-
-    private var selectedSection: SectionsResponseItem? = null
-    private val adapter by lazy { BottomNavAdapter(requireActivity()) }
     private val getImage =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val imageUri: Uri? = result.data?.data
                 Log.d("HANDLE picker", "FILE:${imageUri}: ")
-                showSnack(binding.root, "File format: $imageUri")
                 imageUri?.let {
                     val uri = it
                     val (file, size, fileType) = getFileDetailsFromUri(uri) ?: Triple(
@@ -353,7 +355,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
     private fun setupBottomNavigation() {
         val mainViewPager = binding.navHost
-        mainViewPager.adapter= adapter
+        mainViewPager.adapter= BottomNavAdapter(requireActivity())
         mainViewPager.isUserInputEnabled = false
         binding.homeNavigation.setOnTabSelectListener(object :
             AnimatedBottomBar.OnTabSelectListener {

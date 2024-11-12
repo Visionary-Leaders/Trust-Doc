@@ -3,6 +3,7 @@ package com.trustio.importantdocuments.data.remote.api
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadResponse
 import com.trustio.importantdocuments.data.remote.response.CollectionAddResponse
+import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.data.remote.response.section.SectionsResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -35,5 +36,11 @@ interface DocApi {
         @Part("file_size") fileSize: RequestBody,
         @Part("file_type") fileType: RequestBody
     ): Response<FileUploadResponse>
+
+    @GET("api/sections/sections/{sectionId}/all-files/")
+    suspend fun getAllFiles(
+        @Header("Authorization") token: String,
+        @Path("sectionId") sectionId: Int
+    ): Response<List<FileItem>>
 
 }

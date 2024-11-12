@@ -14,7 +14,9 @@ import com.trustio.importantdocuments.databinding.HomeScreenBinding
 import com.trustio.importantdocuments.ui.screens.home.adapter.CollectionAdapter
 import com.trustio.importantdocuments.utils.BaseFragment
 import com.trustio.importantdocuments.utils.LocalData
+import com.trustio.importantdocuments.utils.animationTransaction
 import com.trustio.importantdocuments.utils.gone
+import com.trustio.importantdocuments.utils.invisible
 import com.trustio.importantdocuments.utils.showSnack
 import com.trustio.importantdocuments.utils.snackString
 import com.trustio.importantdocuments.utils.visible
@@ -28,11 +30,14 @@ class HomeScreen : BaseFragment<HomeScreenBinding>(HomeScreenBinding::inflate) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model.collectionList.observe(this) {response->
-            binding.collectionProgress.gone()
+            binding.collectionProgress.invisible()
             LocalData.list.clear()
             LocalData.list.addAll(response!!)
             adapter.setItemClickListener {
-
+                val bundle =Bundle()
+                bundle.putInt("sectionId", it.id)
+                bundle.putString("sectionTitle", it.name)
+                navController.navigate(R.id.fileScreen,bundle, animationTransaction().build())
             }
             binding.collectionRv.visible()
             binding.collectionRv.adapter = adapter

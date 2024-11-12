@@ -9,7 +9,11 @@
         android:id="@+id/button_home"
         android:name="com.trustio.importantdocuments.ui.screens.home.HomeScreen"
         android:label="home_screen"
-        tools:layout="@layout/home_screen" />
+        tools:layout="@layout/home_screen" >
+        <action
+            android:id="@+id/action_button_home_to_fileScreen"
+            app:destination="@id/fileScreen" />
+    </fragment>
     <fragment
         android:id="@+id/button_fav"
         android:name="com.trustio.importantdocuments.ui.screens.favorite.FavoriteScreen"
@@ -43,4 +47,9 @@
             android:id="@+id/action_mainScreen_to_button_search"
             app:destination="@id/button_search" />
     </fragment>
+    <fragment
+        android:id="@+id/fileScreen"
+        tools:layout="@layout/file_list_screen"
+        android:name="com.trustio.importantdocuments.ui.screens.file.FileScreen"
+        android:label="FileScreen" />
 </navigation>

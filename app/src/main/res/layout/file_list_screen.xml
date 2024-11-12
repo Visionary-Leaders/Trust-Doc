@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/card_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- Header qismi -->
+
+        <FrameLayout
+            android:id="@+id/header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card_background"
+            android:elevation="4dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/home_icon"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/back"
+                    app:tint="@color/colorGray" />
+
+                <!-- Breadcrumb text -->
+                <TextView
+                    android:id="@+id/breadcrumb_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text=" Pdflar > Files"
+                    android:textColor="@color/colorGray"
+                    android:textSize="@dimen/_15ssp" />
+
+
+            </LinearLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/filter"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="?selectableItemBackground"
+                app:srcCompat="@drawable/filter"
+                app:tint="@color/colorGray"
+                tools:ignore="OnClick" />
+
+        </FrameLayout>
+
+
+        <!-- Filter va sorting qismi -->
+        <FrameLayout
+
+            android:id="@+id/filter_sort_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header_layout"
+            android:background="@color/card_background"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:padding="@dimen/_4sdp">
+
+
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerLayout"
+                app:shimmer_colored="true"
+                app:shimmer_shape="linear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/infoTxt"
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text="Loading Files..."
+                    android:textSize="@dimen/_14ssp" />
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/searchResultList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackground"
+                    android:padding="@dimen/_4sdp"
+                    app:srcCompat="@drawable/ic_round_view_list_24"
+                    app:tint="@color/colorSecondary"
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/searchResultGrid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.2"
+                    android:background="?selectableItemBackground"
+                    android:padding="@dimen/_4sdp"
+                    app:srcCompat="@drawable/ic_round_grid_view_24"
+                    app:tint="@color/colorSecondary"
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
+            </LinearLayout>
+
+        </FrameLayout>
+
+       <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+           android:id="@+id/refreshLayout"
+           android:layout_width="match_parent"
+
+           android:layout_height="match_parent">
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/fileListRv"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_marginBottom="0dp"
+               android:orientation="vertical"
+               android:scrollbars="vertical"
+               app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+               tools:listitem="@layout/file_item" />
+       </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/addFileBtn"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:contentDescription="@string/add"
+        android:src="@drawable/ic_add" />
+</FrameLayout>

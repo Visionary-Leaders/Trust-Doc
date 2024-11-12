@@ -49,4 +49,5 @@
     <string name="upload_img">Upload Img</string>
     <string name="upload_doc">Document</string>
     <string name="choose_upload_type">Choose Upload Type</string>
+    <string name="add">Add</string>
 </resources>

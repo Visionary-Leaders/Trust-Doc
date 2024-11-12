@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_marginVertical="@dimen/_2sdp"
+    android:layout_height="@dimen/_50sdp"
+    app:cardBackgroundColor="@color/card_background"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/circleBg"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            app:cardBackgroundColor="@color/color_hidden_bg"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_100sdp"
+            app:cardElevation="0dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/fileImg"
+                android:layout_width="@dimen/_14ssp"
+                android:layout_height="@dimen/_14ssp"
+
+                app:srcCompat="@drawable/nothing_ic"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_10sdp" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center|start"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginVertical="@dimen/_10sdp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/fileTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:textSize="@dimen/_10ssp"
+                android:text="Berserk Vol 32.pdf"
+                android:fontFamily="@font/urbanist_bold"/>
+            <TextView
+                android:id="@+id/fileSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/urbanist_medium"
+                android:text="25 MB"
+                android:textSize="@dimen/_8ssp"/>
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:orientation="horizontal"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/fileType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:textSize="@dimen/_12ssp"
+            android:text="File Type: jpg"
+            android:layout_gravity="center"
+            android:fontFamily="@font/urbanist_medium"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/dotsMore"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_width="@dimen/_14sdp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_height="@dimen/_14sdp"
+            app:tint="@color/whiteGray"
+            android:rotation="90"
+
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_dots"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

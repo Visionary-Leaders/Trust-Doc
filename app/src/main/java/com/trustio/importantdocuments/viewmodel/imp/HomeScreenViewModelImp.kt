@@ -9,12 +9,12 @@ import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadResponse
 import com.trustio.importantdocuments.data.remote.response.CollectionAddResponse
+import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.data.remote.response.section.SectionsResponse
 import com.trustio.importantdocuments.repository.imp.DocsRepositoryImp
 import com.trustio.importantdocuments.utils.hasConnection
 import com.trustio.importantdocuments.viewmodel.HomeScreenViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -26,6 +26,7 @@ class HomeScreenViewModelImp @Inject constructor(private val repo:DocsRepository
     override val collectionList: MutableLiveData<SectionsResponse> = MutableLiveData()
     override val fileUploadRequest: MutableLiveData<FileUploadResponse> = MutableLiveData()
     override val errorResponse: MutableLiveData<String> = MutableLiveData()
+    override val fileList: MutableLiveData<List<FileItem>> = MutableLiveData()
     override val noInternetLiveData: MutableLiveData<Unit> = MutableLiveData()
 
     init {
@@ -79,12 +80,25 @@ class HomeScreenViewModelImp @Inject constructor(private val repo:DocsRepository
                         fileUploadRequest.value=it
                     }
                     it.onFailure {
-                        errorResponse.value=it.message
+                        errorResponse.value = it.message
                     }
                 }.launchIn(viewModelScope)
             }
-        }else {
-            noInternetLiveData .value =Unit
+        } else {
+            noInternetLiveData.value = Unit
         }
+    }
+
+    override fun loadFileBySection(sectionId: Int) {
+        repo.getAllFiles(sectionId).onEach {
+            it.onSuccess {
+                fileList.postValue(it)
+
+            }
+            it.onFailure {
+                errorResponse.postValue(it.message)
+
+            }
+        }.launchIn(viewModelScope)
     }
 }
