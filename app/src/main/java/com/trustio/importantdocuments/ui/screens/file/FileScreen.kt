@@ -1,18 +1,15 @@
 package com.trustio.importantdocuments.ui.screens.file
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog.show
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.trustio.importantdocuments.data.remote.response.section.SectionsResponseItem
 import com.trustio.importantdocuments.databinding.FileListScreenBinding
 import com.trustio.importantdocuments.utils.BaseFragment
 import com.trustio.importantdocuments.utils.convertBytesToMb
 import com.trustio.importantdocuments.utils.gone
 import com.trustio.importantdocuments.utils.invisible
 import com.trustio.importantdocuments.utils.showNetworkDialog
-import com.trustio.importantdocuments.utils.showSnack
 import com.trustio.importantdocuments.utils.visible
 import com.trustio.importantdocuments.viewmodel.imp.HomeScreenViewModelImp
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,25 +31,23 @@ class FileScreen : BaseFragment<FileListScreenBinding>(FileListScreenBinding::in
                     allFileSize.add(it.file_size.toLong())
                 }
             }
-            binding.fileListRv.visible()
-            binding.progressBar.invisible()
-            binding.filterSortLayout.visible()
             binding.infoTxt.text =
                 "${allFileSize.size} Items - %.2f MB".format(allFileSize.convertBytesToMb())
             binding.breadcrumbText.text = "$sectionData > Files"
             binding.fileListRv.adapter = FileListAdapter().apply {
                 submitList(it ?: arrayListOf())
 
-// RefreshDAta
-                binding.refreshLayout.isRefreshing=false
+                // RefreshData
+                binding.refreshLayout.isRefreshing = false
                 binding.shimmerLayout.hideShimmer()
+                binding.fileListRv.visible()
+                binding.progressBar.invisible()
             }
         }
         model.noInternetLiveData.observe(this) {
             showNetworkDialog(requireActivity(),binding.root)
             binding.fileListRv.visible()
             binding.progressBar.gone()
-            binding.filterSortLayout.visible()
         }
     }
 
@@ -60,7 +55,6 @@ class FileScreen : BaseFragment<FileListScreenBinding>(FileListScreenBinding::in
         val sectionData = arguments?.getInt("sectionId")?:0
         model.loadFileBySection(sectionId = sectionData)
         binding.fileListRv.invisible()
-        binding.filterSortLayout.invisible()
         loadView()
         setupRefresh()
     }
