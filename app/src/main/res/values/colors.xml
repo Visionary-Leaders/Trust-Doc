@@ -60,4 +60,5 @@
     <color name="color_img_bg_yellow">#25F59E0B</color>
     <color name="color_img_bg_green">#2822C55E</color>
     <color name="color_hidden_bg">#234F46E5</color>
+    <color name="color_folder_bg">#27F4633F</color>
 </resources>

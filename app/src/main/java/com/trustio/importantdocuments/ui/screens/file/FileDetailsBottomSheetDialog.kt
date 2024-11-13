@@ -8,9 +8,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.databinding.ShowFileSheetBinding
+import com.trustio.importantdocuments.utils.LocalData.fileItem
 import com.trustio.importantdocuments.utils.convertBytesToMb
 
-class FileDetailsBottomSheetDialog(private val fileItem: FileItem) : BottomSheetDialogFragment() {
+class FileDetailsBottomSheetDialog() : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

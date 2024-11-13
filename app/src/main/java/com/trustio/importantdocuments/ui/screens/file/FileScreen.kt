@@ -31,6 +31,7 @@ import com.trustio.importantdocuments.data.remote.request.FileUploadRequest
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.databinding.FileListScreenBinding
 import com.trustio.importantdocuments.utils.BaseFragment
+import com.trustio.importantdocuments.utils.LocalData.fileItem
 import com.trustio.importantdocuments.utils.convertBytesToMb
 import com.trustio.importantdocuments.utils.gone
 import com.trustio.importantdocuments.utils.invisible
@@ -123,28 +124,9 @@ class FileScreen : BaseFragment<FileListScreenBinding>(FileListScreenBinding::in
             }
         })
 
-        binding.fileListRv.setSwipeMenuCreator { leftMenu, rightMenu, position ->
-            val bookmarkItem = SwipeMenuItem(requireActivity()).apply {
 
-                setBackgroundColor(Color.parseColor("#3358FF"))
-                text = "Bookmark"
-                setTextColor(Color.WHITE)
-                width = 200
-                height = ViewGroup.LayoutParams.MATCH_PARENT
 
-                setImage(R.drawable.ic_fav)
-            }
-            rightMenu.addMenuItem(bookmarkItem)
-        }
-        binding.fileListRv.setOnItemMenuClickListener { menuBridge, adapterPosition ->
-            menuBridge.closeMenu()
 
-            when (menuBridge.position) {
-                0 -> {
-                    showSnack(binding.root,"Item saved to favorites")
-                }
-            }
-        }
         binding.homeIcon.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -159,11 +141,58 @@ class FileScreen : BaseFragment<FileListScreenBinding>(FileListScreenBinding::in
             this.recycler(0)
         }
         adapter.setItemClickListener {
-            val bottomSheetDialog = FileDetailsBottomSheetDialog(it)
+            fileItem =it
+            val bottomSheetDialog = FileDetailsBottomSheetDialog()
             bottomSheetDialog.show(parentFragmentManager, "FileDetailsBottomSheetDialog")
 
         }
-        adapter.setMeuClickListener {
+        adapter.setMeuClickListener {}
+        setUpSwipeMenu()
+    }
+    private fun setUpSwipeMenu(){
+        when(adapter.type){
+            0->{
+                binding.fileListRv.setSwipeMenuCreator { leftMenu, rightMenu, position ->
+                    val bookmarkItem = SwipeMenuItem(requireActivity()).apply {
+                        setBackgroundColor(Color.parseColor("#3358FF"))
+                        text = "Bookmark"
+                        setTextColor(Color.WHITE)
+                        width = 200
+                        height = ViewGroup.LayoutParams.MATCH_PARENT
+
+
+                        setImage(R.drawable.ic_fav)
+                    }
+                    val download = SwipeMenuItem(requireActivity()).apply {
+                        setBackgroundColor(Color.parseColor("#234F46E5"))
+                        text = "Download"
+                        setTextColor(Color.WHITE)
+                        width = 200
+                        height = ViewGroup.LayoutParams.MATCH_PARENT
+
+                        setImage(R.drawable.ic_download)
+                    }
+                    rightMenu.addMenuItem(bookmarkItem)
+                    rightMenu.addMenuItem(download)
+                }
+                binding.fileListRv.setOnItemMenuClickListener { menuBridge, adapterPosition ->
+                    menuBridge.closeMenu()
+                    println("MENU POSITION ${menuBridge.position}")
+                    when (menuBridge.position) {
+                        0 -> {
+                            list[adapterPosition]
+                            showSnack(binding.root,"Item saved to favorites")
+                        }
+                        1-> {
+                            list[adapterPosition]
+                            showSnack(binding.root,"Item downloaded")
+
+                        }
+                    }
+
+                }
+
+            }
 
         }
     }

@@ -4,13 +4,13 @@
     android:layout_height="@dimen/_55sdp"
     android:layout_marginVertical="@dimen/_4sdp"
     app:cardCornerRadius="@dimen/_12sdp"
+    android:layout_marginHorizontal="@dimen/_8sdp"
     app:cardElevation="0dp"
     android:background="?selectableItemBackgroundBorderless"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_marginHorizontal="@dimen/_10sdp"
     android:elevation="0dp"
-    app:cardBackgroundColor="#4AB656DF">
+    app:cardBackgroundColor="#4A5694DF">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,7 +20,7 @@
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
             android:layout_marginStart="@dimen/_8sdp"
-            app:cardBackgroundColor="#578626BA"
+            app:cardBackgroundColor="#341E7AA5"
             app:cardCornerRadius="@dimen/_8sdp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,7 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/cardView"
             app:srcCompat="@drawable/next"
-            app:tint="@color/white" />
+            app:tint="@color/white_and_black" />
 
         <TextView
             android:id="@+id/collectionName"
