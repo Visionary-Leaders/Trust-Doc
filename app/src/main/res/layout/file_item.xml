@@ -42,6 +42,8 @@
             <TextView
                 android:id="@+id/fileTitle"
                 android:layout_width="wrap_content"
+                android:maxEms="123"
+                android:maxLength="34"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_2sdp"
                 android:textSize="@dimen/_10ssp"
@@ -81,6 +83,8 @@
             android:id="@+id/dotsMore"
             android:layout_marginEnd="@dimen/_4sdp"
             android:layout_width="@dimen/_14sdp"
+            android:visibility="gone"
+            android:background="?selectableItemBackgroundBorderless"
             android:layout_marginTop="@dimen/_1sdp"
             android:layout_height="@dimen/_14sdp"
             app:tint="@color/whiteGray"

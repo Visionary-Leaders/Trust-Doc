@@ -206,6 +206,7 @@ class MainScreen: BaseFragment<MainScreenBinding>(MainScreenBinding::inflate) {
 
         setupBottomNavigation()
     }
+
     private fun pickPdf() {
         pickPdfLauncher.launch(arrayOf("application/pdf"))
     }

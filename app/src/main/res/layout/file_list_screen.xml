@@ -27,6 +27,7 @@
 
                 <ImageView
                     android:id="@+id/home_icon"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:layout_width="@dimen/_24sdp"
                     android:layout_height="@dimen/_24sdp"
                     android:layout_gravity="center"
@@ -53,8 +54,9 @@
                 android:layout_width="@dimen/_24sdp"
                 android:layout_height="@dimen/_24sdp"
                 android:layout_gravity="center|end"
+                android:visibility="gone"
                 android:layout_marginEnd="@dimen/_10sdp"
-                android:background="?selectableItemBackground"
+                android:background="?selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/filter"
                 app:tint="@color/colorGray"
                 tools:ignore="OnClick" />
@@ -106,7 +108,7 @@
                     android:id="@+id/searchResultList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?selectableItemBackground"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:padding="@dimen/_4sdp"
                     app:srcCompat="@drawable/ic_round_view_list_24"
                     app:tint="@color/colorSecondary"
@@ -117,7 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.2"
-                    android:background="?selectableItemBackground"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:padding="@dimen/_4sdp"
                     app:srcCompat="@drawable/ic_round_grid_view_24"
                     app:tint="@color/colorSecondary"
@@ -131,7 +133,7 @@
            android:layout_width="match_parent"
 
            android:layout_height="match_parent">
-           <androidx.recyclerview.widget.RecyclerView
+           <com.yanzhenjie.recyclerview.SwipeRecyclerView
                android:id="@+id/fileListRv"
                android:layout_width="match_parent"
                android:layout_height="match_parent"

@@ -7,51 +7,131 @@ import androidx.recyclerview.widget.RecyclerView
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.databinding.FileItemBinding
+import com.trustio.importantdocuments.databinding.FileItemMiddleBinding
 import com.trustio.importantdocuments.utils.convertBytesToMb
+import com.trustio.importantdocuments.utils.setAnimation
 
-class FileListAdapter :RecyclerView.Adapter<FileListAdapter.FileListVh>() {
-    private val list= ArrayList<FileItem>()
-    inner class FileListVh(val binding: FileItemBinding) : RecyclerView.ViewHolder(binding.root){
+class FileListAdapter(var type: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val list = ArrayList<FileItem>()
+    private lateinit var listener: (FileItem) -> Unit
+    private lateinit var menuListener : (FileItem) -> Unit
+    fun setMeuClickListener(listener:(FileItem) -> Unit){
+        this.menuListener=listener
+    }
+    fun setItemClickListener(listener:(FileItem) -> Unit){
+        this.listener=listener
+    }
+    inner class FileListVh(val binding: FileItemBinding) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
-        fun onBind(data:FileItem){
+        fun onBind(data: FileItem) {
             binding.apply {
-                fileTitle.text=data.file_name
-                fileType.text="File Type: ${data.file_type}"
+                fileTitle.text = data.file_name
+                fileType.text = "File Type: ${data.file_type}"
                 fileSize.text = "%.2f MB".format(data.file_size.convertBytesToMb())
-                when(data.file_type){
+                when (data.file_type) {
 
                     "jpg" -> {
                         binding.fileImg.setImageResource(R.drawable.img_small_ic)
                         binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_yellow))
                     }
-                    "png" ->{
+
+                    "png" -> {
 
                         binding.fileImg.setImageResource(R.drawable.img_small_ic)
                         binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_yellow))
                     }
-                    "pdf" ->{
+
+                    "pdf" -> {
 
                         binding.fileImg.setImageResource(R.drawable.ic_doc_small)
                         binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_green))
                     }
+
                     "application/pdf" -> {
 
                         binding.fileImg.setImageResource(R.drawable.ic_doc_small)
                         binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_green))
                     }
-                    else ->{
+
+                    else -> {
 
                         binding.fileImg.setImageResource(R.drawable.nothing_ic)
                         binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_hidden_bg))
                     }
+                }
+                root.setOnClickListener {
+                    listener(data)
+                }
+                dotsMore.setOnClickListener {
+                    menuListener(data)
                 }
 
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileListVh {
-        return FileListVh(FileItemBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+    inner class FileMediaVh(val binding: FileItemMiddleBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun onBind(data: FileItem) {
+            binding.apply {
+                fileTitle.text =
+                    "${data.file_name} - %.1f MB".format(data.file_size.convertBytesToMb())
+
+                when (data.file_type) {
+                    "pdf" -> {
+                        fileImg.setImageResource(R.drawable.ic_doc)
+                    }
+
+                    "jpg" -> {
+                        fileImg.setImageResource(R.drawable.ic_image)
+                    }
+
+                    "png" -> {
+                        fileImg.setImageResource(R.drawable.ic_image)
+                    }
+
+                    "application/pdf" -> {
+                        fileImg.setImageResource(R.drawable.ic_doc)
+
+                    }
+
+                    else -> {
+
+                    }
+                }
+                dotsMore.setOnClickListener {
+                    menuListener(data)
+                }
+
+                root.setOnClickListener {
+                    listener(data)
+                }
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (type) {
+            0 -> {
+                FileListVh(
+                    FileItemBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+
+            else -> {
+                FileMediaVh(
+                    FileItemMiddleBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+        }
     }
 
     fun submitList(newList: List<FileItem>) {
@@ -64,7 +144,26 @@ class FileListAdapter :RecyclerView.Adapter<FileListAdapter.FileListVh>() {
         return list.size
     }
 
-    override fun onBindViewHolder(holder: FileListVh, position: Int) {
-        holder.onBind(list[position])
+    override fun getItemViewType(position: Int): Int {
+        return type // 0 yoki 1 qiymati `type`ga asoslangan holda qaytadi
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (type) {
+            0 -> {
+                val b = (holder as FileListVh)
+                val binding = (holder as FileListVh).binding
+                setAnimation(holder.itemView.context, binding.root)
+
+                b.onBind(list[position])
+            }
+
+            else -> {
+                val b = (holder as FileMediaVh)
+                val binding = holder.binding
+                setAnimation(holder.itemView.context, binding.root)
+                b.onBind(list[position])
+            }
+        }
     }
 }

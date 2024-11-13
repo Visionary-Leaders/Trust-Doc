@@ -46,6 +46,14 @@
             android:layout_height="wrap_content"
             android:text="My Cv.pdf"
             android:layout_gravity="start"
+            android:singleLine="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxLength="14"
+            android:ellipsize="marquee"
+            android:textDirection="firstStrong"
             android:textSize="@dimen/_12ssp"
             android:fontFamily="@font/montserrat_medium"/>
         
