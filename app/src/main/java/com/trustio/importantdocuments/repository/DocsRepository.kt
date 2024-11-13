@@ -1,6 +1,7 @@
 package com.trustio.importantdocuments.repository
 
 import android.net.Uri
+import com.trustio.importantdocuments.data.local.room.entity.Bookmark
 import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadResponse
 import com.trustio.importantdocuments.data.remote.response.CollectionAddResponse
@@ -22,5 +23,17 @@ interface DocsRepository {
     ):Flow<Result<FileUploadResponse>>
 
     fun getAllFiles(sectionId: Int): Flow<Result<List<FileItem>>>
+    // Local Room operations
+    suspend fun addBookmark(bookmark: Bookmark)
+    fun getAllBookmarks(): Flow<List<Bookmark>>
+    fun getBookmarksBySection(sectionId: Int): Flow<List<Bookmark>>
+    suspend fun removeBookmark(bookmark: Bookmark)
+    suspend fun removeBookmarkById(bookmarkId: Int)
+
+    // Remote API calls
+    suspend fun fetchRemoteFileItems(): List<FileItem>
+
+    suspend fun doesBookmarkExist(bookmarkId: Int): Boolean
+
 
 }

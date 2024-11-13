@@ -2,6 +2,8 @@ package com.trustio.importantdocuments.repository.imp
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import com.trustio.importantdocuments.data.local.room.dao.BookmarkDao
+import com.trustio.importantdocuments.data.local.room.entity.Bookmark
 import com.trustio.importantdocuments.data.local.shp.AppReference
 import com.trustio.importantdocuments.data.remote.api.AuthApi
 import com.trustio.importantdocuments.data.remote.api.DocApi
@@ -12,6 +14,7 @@ import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.data.remote.response.section.SectionsResponse
 import com.trustio.importantdocuments.repository.DocsRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -20,7 +23,9 @@ import okhttp3.RequestBody
 import java.io.File
 import javax.inject.Inject
 
-class DocsRepositoryImp @Inject constructor(private val docApi: DocApi,private val appReference: AppReference,private val authApi:AuthApi) : DocsRepository {
+class DocsRepositoryImp @Inject constructor(
+    private val bookmarkDao: BookmarkDao,
+    private val docApi: DocApi,private val appReference: AppReference,private val authApi:AuthApi) : DocsRepository {
     override  fun addCollection(collectionRequest: CollectionRequest) =
         flow {
             val response = docApi.addCollection(appReference.token, collectionRequest)
@@ -145,4 +150,33 @@ class DocsRepositoryImp @Inject constructor(private val docApi: DocApi,private v
             }
         }
     }
+    override suspend fun addBookmark(bookmark: Bookmark) {
+        bookmarkDao.addBookmark(bookmark)
+    }
+
+    override fun getAllBookmarks(): Flow<List<Bookmark>> {
+        return bookmarkDao.getAllBookmarks()
+    }
+
+    override fun getBookmarksBySection(sectionId: Int): Flow<List<Bookmark>> {
+        return bookmarkDao.getBookmarksBySection(sectionId)
+    }
+
+    override suspend fun removeBookmark(bookmark: Bookmark) {
+        bookmarkDao.removeBookmark(bookmark)
+    }
+
+    override suspend fun removeBookmarkById(bookmarkId: Int) {
+        bookmarkDao.removeBookmarkById(bookmarkId)
+    }
+
+    override suspend fun fetchRemoteFileItems(): List<FileItem> {
+        TODO("EVERYDAY NOTHING")
+    }
+    override suspend fun doesBookmarkExist(bookmarkId: Int): Boolean {
+        return bookmarkDao.doesBookmarkExist(bookmarkId)
+    }
+
+
+
 }
