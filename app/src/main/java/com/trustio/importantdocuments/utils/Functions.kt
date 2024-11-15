@@ -74,15 +74,15 @@ fun Bookmark.toFileItem(): FileItem {
         user = this.user
     )
 }
-fun stringToCustomInt(input: String): Int {
-    val prefix = "2456"
+fun stringToCustomInt(input: String):Int {
+    val prefix = "-1"
     val encoded = input.map { it.code }.joinToString("")
     return (prefix + encoded).toInt()
 }
 
 fun customIntToString(encoded: Int): String {
     val encodedString = encoded.toString()
-    val prefix = "2456"
+    val prefix = "-1"
     if (!encodedString.startsWith(prefix)) {
         throw IllegalArgumentException("Invalid encoded value")
     }

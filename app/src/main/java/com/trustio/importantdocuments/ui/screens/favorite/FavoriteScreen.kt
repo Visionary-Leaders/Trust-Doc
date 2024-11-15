@@ -32,7 +32,7 @@ class FavoriteScreen : BaseFragment<FavoriteScreenBinding>(FavoriteScreenBinding
         model.bookmarks.observe(this) {
             bookmarkList.clear()
             bookmarkList.addAll(it)
-            adapter.submitList(it.map { it.toFileItemWithSection(it.sectionName) })
+            adapter.submitList(it.map { it.toFileItem() })
             loadView()
             binding.fileListRv.adapter = adapter
             binding.fileListRv.visible()

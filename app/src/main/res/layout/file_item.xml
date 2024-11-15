@@ -71,9 +71,10 @@
 
         <TextView
             android:id="@+id/fileType"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
             android:textSize="@dimen/_12ssp"
             android:text="File Type: jpg"
             android:layout_gravity="center"
