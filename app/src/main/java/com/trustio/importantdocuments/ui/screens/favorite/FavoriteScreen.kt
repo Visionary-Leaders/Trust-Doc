@@ -1,60 +1,107 @@
 package com.trustio.importantdocuments.ui.screens.favorite
 
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.trustio.importantdocuments.R
+import com.trustio.importantdocuments.data.local.room.entity.Bookmark
+import com.trustio.importantdocuments.databinding.FavoriteScreenBinding
+import com.trustio.importantdocuments.ui.screens.file.FileDetailsBottomSheetDialog
+import com.trustio.importantdocuments.ui.screens.file.FileListAdapter
+import com.trustio.importantdocuments.utils.BaseFragment
+import com.trustio.importantdocuments.utils.LocalData
+import com.trustio.importantdocuments.utils.invisible
+import com.trustio.importantdocuments.utils.showSnack
+import com.trustio.importantdocuments.utils.toFileItem
+import com.trustio.importantdocuments.utils.visible
+import com.trustio.importantdocuments.viewmodel.imp.FavoriteViewModelImp
+import com.yanzhenjie.recyclerview.SwipeMenuItem
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FavoriteScreen.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FavoriteScreen : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
+@AndroidEntryPoint
+class FavoriteScreen : BaseFragment<FavoriteScreenBinding>(FavoriteScreenBinding::inflate) {
+    private val model by viewModels<FavoriteViewModelImp>()
+    private var bookmarkList = ArrayList<Bookmark>()
+    private val adapter by lazy { FileListAdapter(0, arrayListOf()) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+
+        model.bookmarks.observe(this) {
+            bookmarkList.clear()
+            bookmarkList.addAll(it)
+            val list = it.map { it.toFileItem() }
+            adapter.submitList(list)
+            loadView()
+            binding.fileListRv.adapter = adapter
+            binding.fileListRv.visible()
+            binding.progressBar.invisible()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.favorite_screen, container, false)
+
+    override fun onViewCreate(savedInstanceState: Bundle?) {
+        binding.fileListRv.invisible()
+        setUpSwipeMenu()
+        model.getAllBookmarks()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FavoriteScreen.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FavoriteScreen().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun setUpSwipeMenu() {
+        binding.fileListRv.setSwipeMenuCreator { leftMenu, rightMenu, position ->
+            val bookmarkItem = createBookmarkMenuItem()
+            rightMenu.addMenuItem(bookmarkItem)
+        }
+
+        binding.fileListRv.setOnItemMenuClickListener { menuBridge, adapterPosition ->
+            menuBridge.closeMenu()
+            handleMenuClick(menuBridge.position, adapterPosition)
+        }
     }
+
+    private fun handleMenuClick(menuPosition: Int, adapterPosition: Int) {
+        when (menuPosition) {
+            0 -> toggleBookmark(adapterPosition)
+        }
+    }
+
+    private fun toggleBookmark(adapterPosition: Int) {
+        val currentItem = bookmarkList[adapterPosition]
+        removeBookmark(currentItem, adapterPosition) // Pass the position for direct removal
+    }
+
+    private fun removeBookmark(item: Bookmark, position: Int) {
+        model.removeBookmark(item)
+        bookmarkList.removeAt(position)
+        adapter.notifyItemRemoved(position)
+
+        showSnack(binding.root, "Item removed from Favorites")
+    }
+
+    private fun createBookmarkMenuItem(): SwipeMenuItem {
+        return SwipeMenuItem(requireActivity()).apply {
+            setBackgroundColor(Color.parseColor("#C14D4D"))
+            setTextColor(Color.WHITE)
+            width = 200
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+            text = "Remove"
+            setImage(R.drawable.ic_delete)
+        }
+    }
+
+
+    private fun loadView() {
+        adapter.setItemClickListener {
+            LocalData.fileItem = it
+            val bottomSheetDialog = FileDetailsBottomSheetDialog()
+            bottomSheetDialog.show(parentFragmentManager, "FileDetailsBottomSheetDialog")
+
+        }
+        adapter.setMeuClickListener {}
+    }
+
+
 }

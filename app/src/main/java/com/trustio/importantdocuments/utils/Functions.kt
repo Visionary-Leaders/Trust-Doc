@@ -3,6 +3,8 @@ package com.trustio.importantdocuments.utils
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
@@ -12,11 +14,16 @@ import android.view.animation.OvershootInterpolator
 import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.Zbekz.tashkentmetro.utils.enums.CurrentScreenEnum
 import com.trustio.importantdocuments.R
+import com.trustio.importantdocuments.data.local.room.entity.Bookmark
+import com.trustio.importantdocuments.data.remote.response.file.FileItem
+import java.io.File
 
 fun initActivity(a: Activity) {
     val window = a.window
@@ -35,6 +42,49 @@ fun List<Long>.convertBytesToMb(): Double {
 fun Int.convertBytesToMb(): Double {
     // Convert bytes to megabytes (1 MB = 1048576 bytes)
     return this / 1048576.0
+}
+fun List<Bookmark>.containsFileItem(fileItem: FileItem): Boolean {
+    return this.any { it.id == fileItem.id }
+}
+//Mapper
+
+fun openFile(context: Context, file: File) {
+    val uri: Uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, if (file.extension == "pdf") "application/pdf" else "image/*")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+        Toast.makeText(context, "Faylni ochish uchun dastur mavjud emas", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun Bookmark.toFileItem(): FileItem {
+    return FileItem(
+        id = this.id,
+        section = this.section,
+        file = this.file,
+        file_name = this.fileName,
+        file_type = this.fileType,
+        file_size = this.fileSize,
+        user = this.user
+    )
+}
+fun FileItem.toBookmark(sectionName: String): Bookmark {
+    return Bookmark(
+        id = this.id,
+        section = this.section,
+        file = this.file,
+        fileName = this.file_name,
+        fileType = this.file_type,
+        fileSize = this.file_size,
+        user = this.user,
+        sectionName = sectionName
+    )
 }
 
 fun hideKeyboard(view: View) {

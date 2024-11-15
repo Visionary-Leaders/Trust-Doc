@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.trustio.importantdocuments.R
+import com.trustio.importantdocuments.data.local.room.entity.Bookmark
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.databinding.FileItemBinding
 import com.trustio.importantdocuments.databinding.FileItemMiddleBinding
 import com.trustio.importantdocuments.utils.convertBytesToMb
 import com.trustio.importantdocuments.utils.setAnimation
 
-class FileListAdapter(var type: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FileListAdapter(var type: Int,val bookmarkList:ArrayList<Bookmark>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val list = ArrayList<FileItem>()
     private lateinit var listener: (FileItem) -> Unit
     private lateinit var menuListener : (FileItem) -> Unit
@@ -153,7 +154,7 @@ class FileListAdapter(var type: Int) : RecyclerView.Adapter<RecyclerView.ViewHol
             0 -> {
                 val b = (holder as FileListVh)
                 val binding = (holder as FileListVh).binding
-                setAnimation(holder.itemView.context, binding.root)
+//                setAnimation(holder.itemView.context, binding.root)
 
                 b.onBind(list[position])
             }
@@ -161,7 +162,7 @@ class FileListAdapter(var type: Int) : RecyclerView.Adapter<RecyclerView.ViewHol
             else -> {
                 val b = (holder as FileMediaVh)
                 val binding = holder.binding
-                setAnimation(holder.itemView.context, binding.root)
+//                setAnimation(holder.itemView.context, binding.root)
                 b.onBind(list[position])
             }
         }

@@ -11,7 +11,6 @@ import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadResponse
 import com.trustio.importantdocuments.data.remote.request.TokenRequest
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
-import com.trustio.importantdocuments.data.remote.response.section.SectionsResponse
 import com.trustio.importantdocuments.repository.DocsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -30,33 +29,66 @@ class DocsRepositoryImp @Inject constructor(
         flow {
             val response = docApi.addCollection(appReference.token, collectionRequest)
             if (response.isSuccessful) emit(Result.success(response.body()!!))
-            if (response.code() ==401) {
-                val getToken =authApi.getFullToken(TokenRequest(appReference.password,appReference.phone))
-                if (getToken.isSuccessful) {
-                    appReference.token = "Bearer ${getToken.body()?.access}"
+            if (response.code() == 401) {
+                val getToken =
+                    authApi.getFullToken(TokenRequest(appReference.password, appReference.phone))
+
+                if (getToken.isSuccessful && getToken.body() != null) { // Check if body is not null
+                    appReference.token =
+                        "Bearer ${getToken.body()!!.access}" // Use !! safely after null check
                     val newResponse = docApi.addCollection(appReference.token, collectionRequest)
-                    emit(Result.success(newResponse.body()!!))
+                    if (newResponse.isSuccessful && newResponse.body() != null) {
+                        emit(Result.success(newResponse.body()!!)) // Use !! safely after null check
+                    } else {
+                        emit(
+                            Result.failure(
+                                Exception(
+                                    "Failed to add collection: ${
+                                        newResponse.errorBody()?.string() ?: "Unknown error"
+                                    }"
+                                )
+                            )
+                        )
+                    }
+                } else {
+                    emit(
+                        Result.failure(
+                            Exception(
+                                "Failed to obtain token: ${
+                                    getToken.errorBody()?.string() ?: "Unknown error"
+                                }"
+                            )
+                        )
+                    )
                 }
-        } else emit(Result.failure(Exception(response.errorBody()!!.string())))
+            } else {
+                emit(
+                    Result.failure(
+                        Exception(
+                            response.errorBody()?.string() ?: "Unknown error"
+                        )
+                    )
+                ) // Safe call with fallback
+            }
         }.flowOn(Dispatchers.IO)
 
     @SuppressLint("SuspiciousIndentation")
-    override suspend fun getCollections()
-    =flow<Result<SectionsResponse>> {
-        val response =docApi.getSections(appReference.token!!)
-            if (response.isSuccessful){
-                emit(Result.success(response.body()!!))
-            }else if (response.code() ==401) {
-                val getToken =authApi.getFullToken(TokenRequest(appReference.password,appReference.phone))
-                if (getToken.isSuccessful) {
-                    appReference.token = "Bearer ${getToken.body()?.access}"
-                    val newResponse = docApi.getSections(appReference.token!!)
-                    emit(Result.success(newResponse.body()!!))
-                }
-            } else {
-                emit(Result.failure(Exception(response.errorBody()?.string())))
-
+    override suspend fun getCollections() = flow {
+        val response = docApi.getSections(appReference.token!!)
+        if (response.isSuccessful) {
+            emit(Result.success(response.body()!!))
+        } else if (response.code() == 401) {
+            val getToken =
+                authApi.getFullToken(TokenRequest(appReference.password, appReference.phone))
+            if (getToken.isSuccessful) {
+                appReference.token = "Bearer ${getToken.body()?.access}"
+                val newResponse = docApi.getSections(appReference.token!!)
+                emit(Result.success(newResponse.body()!!))
             }
+        } else {
+            emit(Result.failure(Exception(response.errorBody()?.string())))
+
+        }
     }.flowOn(Dispatchers.IO)
 
     override suspend fun uploadFile(
