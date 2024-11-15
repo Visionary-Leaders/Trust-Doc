@@ -177,9 +177,10 @@ dependencies {
     // For annotation processor (compile-time)
     kapt "androidx.room:room-compiler:2.6.1"
 
-    // PDF Viewer
-    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 
+    //MaterialSearchView
+    implementation 'com.github.Ferfalk:SimpleSearchView:0.2.1'
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
 
 
 

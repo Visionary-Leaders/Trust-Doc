@@ -1,14 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.screens.search.SearchScreen">
+    android:background="@color/card_background">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Search Screen" />
+        android:orientation="vertical">
+        <!-- Header qismi -->
+
+        <FrameLayout
+            android:id="@+id/header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card_background"
+            android:elevation="4dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- Breadcrumb text -->
+                <TextView
+                    android:id="@+id/breadcrumb_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text=" Search Screen"
+                    android:textColor="@color/colorGray"
+                    android:textSize="@dimen/_15ssp" />
+
+
+            </LinearLayout>
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="@dimen/_24sdp"
+                android:id="@+id/searchIc"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="@dimen/_12sdp"
+                app:tint="@color/white_and_black"
+                app:srcCompat="@drawable/ic_search"
+                android:layout_height="@dimen/_24sdp"/>
+
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/filter"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_gravity="center|end"
+                android:visibility="gone"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="?selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/filter"
+                app:tint="@color/colorGray"
+                tools:ignore="OnClick" />
+
+        </FrameLayout>
+
+
+
+
+        <com.yanzhenjie.recyclerview.SwipeRecyclerView
+            android:id="@+id/fileListRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/file_item" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
 </FrameLayout>
