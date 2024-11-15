@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.local.room.entity.Bookmark
 import com.trustio.importantdocuments.databinding.FavoriteScreenBinding
@@ -15,12 +14,11 @@ import com.trustio.importantdocuments.utils.LocalData
 import com.trustio.importantdocuments.utils.invisible
 import com.trustio.importantdocuments.utils.showSnack
 import com.trustio.importantdocuments.utils.toFileItem
+import com.trustio.importantdocuments.utils.toFileItemWithSection
 import com.trustio.importantdocuments.utils.visible
 import com.trustio.importantdocuments.viewmodel.imp.FavoriteViewModelImp
 import com.yanzhenjie.recyclerview.SwipeMenuItem
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FavoriteScreen : BaseFragment<FavoriteScreenBinding>(FavoriteScreenBinding::inflate) {
@@ -34,8 +32,7 @@ class FavoriteScreen : BaseFragment<FavoriteScreenBinding>(FavoriteScreenBinding
         model.bookmarks.observe(this) {
             bookmarkList.clear()
             bookmarkList.addAll(it)
-            val list = it.map { it.toFileItem() }
-            adapter.submitList(list)
+            adapter.submitList(it.map { it.toFileItemWithSection(it.sectionName) })
             loadView()
             binding.fileListRv.adapter = adapter
             binding.fileListRv.visible()

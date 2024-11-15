@@ -74,6 +74,33 @@ fun Bookmark.toFileItem(): FileItem {
         user = this.user
     )
 }
+fun stringToCustomInt(input: String): Int {
+    val prefix = "2456"
+    val encoded = input.map { it.code }.joinToString("")
+    return (prefix + encoded).toInt()
+}
+
+fun customIntToString(encoded: Int): String {
+    val encodedString = encoded.toString()
+    val prefix = "2456"
+    if (!encodedString.startsWith(prefix)) {
+        throw IllegalArgumentException("Invalid encoded value")
+    }
+    val asciiValues = encodedString.removePrefix(prefix)
+    return asciiValues.chunked(2) { it.toString().toInt().toChar() }.joinToString("")
+}
+
+fun Bookmark.toFileItemWithSection(sectionName: String): FileItem {
+    return FileItem(
+        id = this.id,
+        section = stringToCustomInt(sectionName),
+        file = this.file,
+        file_name = this.fileName,
+        file_type = this.sectionName,
+        file_size = this.fileSize,
+        user = this.user
+    )
+}
 fun FileItem.toBookmark(sectionName: String): Bookmark {
     return Bookmark(
         id = this.id,

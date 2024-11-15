@@ -14,4 +14,5 @@ class SearchScreen : BaseFragment<SearchScreenBinding>(SearchScreenBinding::infl
 
     }
 
+
 }

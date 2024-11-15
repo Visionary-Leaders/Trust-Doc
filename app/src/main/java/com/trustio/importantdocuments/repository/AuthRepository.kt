@@ -11,7 +11,7 @@ interface AuthRepository {
     fun sendOtp(phoneNumber: String, activity: Activity): Flow<ResultApp>
     fun confirmOtpFake(code:String):Flow<Result<String>>
     fun registerUser(registerRequest: RegisterRequest):Flow<Result<RegisterResponse>>
-
+//    fun registerUserWithEmail(email:String,activity: Activity):Flow<Result<Unit>>
     fun loginUser(loginRequest: LoginRequest):Flow<Result<RegisterResponse>>
 
 }
