@@ -23,6 +23,7 @@ import com.Zbekz.tashkentmetro.utils.enums.CurrentScreenEnum
 import com.trustio.importantdocuments.R
 import com.trustio.importantdocuments.data.local.room.entity.Bookmark
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
+import com.trustio.importantdocuments.databinding.FileItemBinding
 import java.io.File
 
 fun initActivity(a: Activity) {
@@ -62,6 +63,40 @@ fun openFile(context: Context, file: File) {
         Toast.makeText(context, "Faylni ochish uchun dastur mavjud emas", Toast.LENGTH_SHORT).show()
     }
 }
+fun checkFileType (item:Bookmark,binding: FileItemBinding) {
+    when (item.fileType) {
+
+        "jpg" -> {
+            binding.fileImg.setImageResource(R.drawable.img_small_ic)
+            binding.circleBg.setCardBackgroundColor(binding.root.context.getColor(R.color.color_img_bg_yellow))
+        }
+
+        "png" -> {
+
+            binding.fileImg.setImageResource(R.drawable.img_small_ic)
+            binding.circleBg.setCardBackgroundColor(binding.root.context.getColor(R.color.color_img_bg_yellow))
+        }
+
+        "pdf" -> {
+
+            binding.fileImg.setImageResource(R.drawable.ic_doc_small)
+            binding.circleBg.setCardBackgroundColor(binding.root.context.getColor(R.color.color_img_bg_green))
+        }
+
+        "application/pdf" -> {
+
+            binding.fileImg.setImageResource(R.drawable.ic_doc_small)
+            binding.circleBg.setCardBackgroundColor(binding.root.context.getColor(R.color.color_img_bg_green))
+        }
+
+        else -> {
+
+            binding.fileImg.setImageResource(R.drawable.nothing_ic)
+            binding.circleBg.setCardBackgroundColor(binding.root.context.getColor(R.color.color_hidden_bg))
+        }
+    }
+}
+
 
 fun Bookmark.toFileItem(): FileItem {
     return FileItem(

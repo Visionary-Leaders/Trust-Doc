@@ -7,6 +7,7 @@ import com.trustio.importantdocuments.data.remote.request.FileUploadResponse
 import com.trustio.importantdocuments.data.remote.response.CollectionAddResponse
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.data.remote.response.section.SectionsResponse
+import com.trustio.importantdocuments.data.remote.response.section.SectionsResponseItem
 import com.trustio.importantdocuments.utils.ResultApp
 import kotlinx.coroutines.flow.Flow
 
@@ -34,6 +35,8 @@ interface DocsRepository {
     suspend fun fetchRemoteFileItems(): List<FileItem>
 
     suspend fun doesBookmarkExist(bookmarkId: Int): Boolean
+
+    fun loadAllFiles(sectionList:ArrayList<SectionsResponseItem>):Flow<List<Bookmark>>
 
 
 }

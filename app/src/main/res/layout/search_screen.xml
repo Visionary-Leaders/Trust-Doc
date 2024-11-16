@@ -7,12 +7,15 @@
     android:background="@color/card_background">
 
     <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.mancj.materialsearchbar.MaterialSearchBar
             android:layout_width="match_parent"
+            android:id="@+id/searchBar"
             app:mt_backIconTint="@color/white_and_black"
             app:mt_clearIconTint="@color/white_and_black"
             app:mt_textColor="@color/white_and_black"
@@ -30,22 +33,30 @@
 
 
 
-        <com.yanzhenjie.recyclerview.SwipeRecyclerView
-            android:id="@+id/fileListRv"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:visibility="visible"
-            android:orientation="vertical"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/file_item" />
+            android:layout_height="wrap_content">
+            <com.yanzhenjie.recyclerview.SwipeRecyclerView
+                android:id="@+id/fileListRv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="0dp"
+                android:visibility="visible"
+                android:orientation="vertical"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/file_item" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     </LinearLayout>
 
-<!--    <ProgressBar-->
-<!--        android:id="@+id/progressBar"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="center" />-->
+
+    <ProgressBar
+        android:visibility="visible"
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
 </FrameLayout>

@@ -11,11 +11,14 @@ import com.trustio.importantdocuments.data.remote.request.CollectionRequest
 import com.trustio.importantdocuments.data.remote.request.FileUploadResponse
 import com.trustio.importantdocuments.data.remote.request.TokenRequest
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
+import com.trustio.importantdocuments.data.remote.response.section.SectionsResponseItem
 import com.trustio.importantdocuments.repository.DocsRepository
+import com.trustio.importantdocuments.utils.toBookmark
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -205,10 +208,41 @@ class DocsRepositoryImp @Inject constructor(
     override suspend fun fetchRemoteFileItems(): List<FileItem> {
         TODO("EVERYDAY NOTHING")
     }
+
     override suspend fun doesBookmarkExist(bookmarkId: Int): Boolean {
         return bookmarkDao.doesBookmarkExist(bookmarkId)
     }
 
+    override fun loadAllFiles(sectionList: ArrayList<SectionsResponseItem>) = flow {
+        val bookmarkList = mutableListOf<Bookmark>() // MutableList ishlatish yaxshiroq
+        for (section in sectionList) {
+            val response = makeRequestWithToken(docApi, section.id)
+            response.forEach { item ->
+                bookmarkList.add(
+                    item.toBookmark(sectionName = section.name)
+                )
+            }
+        }
+        emit(bookmarkList) // Natijani bir marta emit qilish
+    }
 
+    private suspend fun makeRequestWithToken(docApi: DocApi, sectionId: Int): List<FileItem> {
+        var response = docApi.getAllFiles(appReference.token, sectionId)
+
+        if (response.code() == 401) {
+            refreshToken()  // Refresh the token if expired
+            response =
+                docApi.getAllFiles(appReference.token, sectionId)  // Retry with the new token
+        }
+
+        return response.body() ?: emptyList()
+    }
+
+    suspend fun refreshToken() {
+        val getToken = authApi.getFullToken(TokenRequest(appReference.password, appReference.phone))
+        if (getToken.isSuccessful) {
+            appReference.token = "Bearer ${getToken.body()?.access}"
+        }
+    }
 
 }

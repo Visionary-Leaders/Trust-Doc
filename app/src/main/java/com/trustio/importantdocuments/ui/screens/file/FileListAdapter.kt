@@ -9,8 +9,10 @@ import com.trustio.importantdocuments.data.local.room.entity.Bookmark
 import com.trustio.importantdocuments.data.remote.response.file.FileItem
 import com.trustio.importantdocuments.databinding.FileItemBinding
 import com.trustio.importantdocuments.databinding.FileItemMiddleBinding
+import com.trustio.importantdocuments.utils.checkFileType
 import com.trustio.importantdocuments.utils.convertBytesToMb
 import com.trustio.importantdocuments.utils.setAnimation
+import com.trustio.importantdocuments.utils.toBookmark
 
 class FileListAdapter(var type: Int,val bookmarkList:ArrayList<Bookmark>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val list = ArrayList<FileItem>()
@@ -29,37 +31,7 @@ class FileListAdapter(var type: Int,val bookmarkList:ArrayList<Bookmark>) : Recy
                 fileTitle.text = data.file_name
                 fileType.text = "Type: ${data.file_type}"
                 fileSize.text = "%.2f MB".format(data.file_size.convertBytesToMb())
-                when (data.file_type) {
-
-                    "jpg" -> {
-                        binding.fileImg.setImageResource(R.drawable.img_small_ic)
-                        binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_yellow))
-                    }
-
-                    "png" -> {
-
-                        binding.fileImg.setImageResource(R.drawable.img_small_ic)
-                        binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_yellow))
-                    }
-
-                    "pdf" -> {
-
-                        binding.fileImg.setImageResource(R.drawable.ic_doc_small)
-                        binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_green))
-                    }
-
-                    "application/pdf" -> {
-
-                        binding.fileImg.setImageResource(R.drawable.ic_doc_small)
-                        binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_img_bg_green))
-                    }
-
-                    else -> {
-
-                        binding.fileImg.setImageResource(R.drawable.nothing_ic)
-                        binding.circleBg.setCardBackgroundColor(root.context.getColor(R.color.color_hidden_bg))
-                    }
-                }
+                checkFileType(data.toBookmark(""),binding)
                 root.setOnClickListener {
                     listener(data)
                 }
