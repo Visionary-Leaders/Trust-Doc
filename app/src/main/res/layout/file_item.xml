@@ -41,9 +41,15 @@
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/fileTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_130sdp"
                 android:maxEms="123"
-                android:maxLength="34"
+                android:singleLine="true"
+                android:focusable="true"
+                android:scrollHorizontally="true"
+                android:focusableInTouchMode="true"
+                android:freezesText="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLength="30"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_2sdp"
                 android:textSize="@dimen/_10ssp"
@@ -75,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_14sdp"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_10ssp"
             android:text="File Type: jpg"
             android:layout_gravity="center"
             android:fontFamily="@font/urbanist_medium"/>

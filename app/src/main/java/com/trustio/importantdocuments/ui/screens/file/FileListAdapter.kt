@@ -29,6 +29,7 @@ class FileListAdapter(var type: Int,val bookmarkList:ArrayList<Bookmark>) : Recy
         fun onBind(data: FileItem) {
             binding.apply {
                 fileTitle.text = data.file_name
+                fileTitle.isSelected=true
                 fileType.text = "Type: ${data.file_type}"
                 fileSize.text = "%.2f MB".format(data.file_size.convertBytesToMb())
                 checkFileType(data.toBookmark(""),binding)
@@ -47,6 +48,7 @@ class FileListAdapter(var type: Int,val bookmarkList:ArrayList<Bookmark>) : Recy
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: FileItem) {
             binding.apply {
+                fileTitle.isSelected=true
                 fileTitle.text =
                     "${data.file_name} - %.1f MB".format(data.file_size.convertBytesToMb())
 
@@ -82,6 +84,8 @@ class FileListAdapter(var type: Int,val bookmarkList:ArrayList<Bookmark>) : Recy
             }
         }
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (type) {

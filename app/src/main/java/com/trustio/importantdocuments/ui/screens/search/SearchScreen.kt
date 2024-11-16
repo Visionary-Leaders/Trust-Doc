@@ -150,7 +150,7 @@ class SearchScreen : BaseFragment<SearchScreenBinding>(SearchScreenBinding::infl
             }
 
         }
-        adapter.submitList(if (query.isEmpty()) list else filteredList)
+        adapter.submitList(if (query.isEmpty()) list else filteredList,convertedQuery)
     }
 
     private fun setUpSwipeMenu() {

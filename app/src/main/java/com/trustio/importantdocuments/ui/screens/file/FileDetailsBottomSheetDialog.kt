@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.trustio.importantdocuments.R
@@ -55,7 +56,7 @@ class FileDetailsBottomSheetDialog() : BottomSheetDialogFragment() {
         }
 
         binding.btnOpen.setOnClickListener {
-            downloadAndOpenFile(fileUrl = fileItem.file)
+            openFile(fileUrl = fileItem.file)
             dismiss()
         }
 
@@ -63,6 +64,9 @@ class FileDetailsBottomSheetDialog() : BottomSheetDialogFragment() {
 
         return binding.root
     }
+
+
+
 
     private fun downloadFile(url: String, fileName: String, binding: ShowFileSheetBinding) {
         val request = DownloadManager.Request(Uri.parse(url)).apply {
@@ -92,104 +96,21 @@ class FileDetailsBottomSheetDialog() : BottomSheetDialogFragment() {
     }
 
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun downloadAndOpenFile(fileUrl: String) {
-        GlobalScope.launch(Dispatchers.IO) {  // Use Dispatchers.IO for IO-bound operations
-            try {
-                val cacheFile = downloadFile(fileUrl)
+    private fun openFile(fileUrl: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fileUrl))
+        intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
 
-                withContext(Dispatchers.Main) { // Switch back to the main thread to show the dialog
-                    showFileChooserDialog(cacheFile)
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {  // Ensure exception handling happens on the main thread
-                    Toast.makeText(App.currentContext(), "Failed to download file", Toast.LENGTH_SHORT).show()
-                }
-            }
+        intent.setPackage("com.android.chrome")
+
+        val packageManager = requireActivity().packageManager
+        val activities = packageManager.queryIntentActivities(intent, 0)
+
+        if (activities.isNotEmpty()) {
+            startActivity(intent)
+        } else {
+            intent.setPackage(null)
+            startActivity(intent)
         }
-    }
-
-    private suspend fun downloadFile(fileUrl: String): File {
-        return withContext(Dispatchers.IO) {
-            val client = OkHttpClient()
-            val request = Request.Builder().url(fileUrl).build()
-
-            try {
-                val response = client.newCall(request).execute()
-
-                // Log the response code for debugging
-                Log.d("FileDownload", "Response code: ${response.code}")
-
-                // Check if the response is successful
-                if (!response.isSuccessful) {
-                    throw Exception("Download failed with response code: ${response.code}")
-                }
-
-                // Check for content-type to ensure it's the expected file type
-                val contentType = response.header("Content-Type")
-                Log.d("FileDownload", "Content-Type: $contentType")
-
-                // Save the downloaded file to the cache directory
-                val file = File(App.currentContext()!!.cacheDir, fileItem.file_name)  // Customize the file name and extension
-                val outputStream: OutputStream = FileOutputStream(file)
-
-                // Get the input stream and copy it to the output stream
-                val inputStream: InputStream = response.body?.byteStream() ?: throw Exception("Failed to read file stream")
-                inputStream.copyTo(outputStream)
-
-                inputStream.close()
-                outputStream.close()
-
-                // Log the file location
-                Log.d("FileDownload", "File downloaded to: ${file.absolutePath}")
-
-                return@withContext file  // Return the downloaded file
-
-            } catch (e: Exception) {
-                // Log the exception to understand what went wrong
-                Log.e("FileDownload", "Error downloading file: ${e.message}", e)
-                throw e  // Rethrow the exception to be caught in the caller
-            }
-        }
-    }
-
-    private fun showFileChooserDialog(file: File) {
-        val fileTypes = arrayOf("Image", "PDF")
-
-        val dialog = AlertDialog.Builder(requireActivity())
-            .setTitle("Choose file type")
-            .setItems(fileTypes) { _, which ->
-                when (which) {
-                    0 -> openImageFileWithCache(file)
-                    1 -> openPdfWithCache(file)
-                }
-            }
-            .create()
-
-        dialog.show()
-    }
-
-    private fun openImageFileWithCache(file: File) {
-        val uri = Uri.fromFile(file)
-
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, "image/*")
-            flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        }
-
-        startActivity(intent)
-    }
-
-    // PDF faylini cache'dan ochish
-    private fun openPdfWithCache(file: File) {
-        val uri = Uri.fromFile(file)
-
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, "application/pdf")
-            flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        }
-
-        startActivity(intent)
     }
 
 
