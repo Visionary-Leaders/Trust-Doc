@@ -11,8 +11,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <SearchView
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
+            app:menu="@menu/search_menu"
+
+            android:elevation="@dimen/_10sdp"
+            android:backgroundTint="@color/card_search_color"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="Search"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleMedium"
             android:layout_height="wrap_content" />
 
 
