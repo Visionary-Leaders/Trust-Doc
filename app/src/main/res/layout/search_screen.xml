@@ -11,18 +11,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolBar"
+        <com.mancj.materialsearchbar.MaterialSearchBar
             android:layout_width="match_parent"
-            app:menu="@menu/search_menu"
+            app:mt_backIconTint="@color/white_and_black"
+            app:mt_clearIconTint="@color/white_and_black"
 
-            android:elevation="@dimen/_10sdp"
-            android:backgroundTint="@color/card_search_color"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:title="Search"
-            app:titleTextAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:layout_height="wrap_content" />
+            android:paddingTop="@dimen/_2sdp"
+            app:mt_placeholder="Search"
+            android:elevation="@dimen/_4sdp"
+            android:background="@color/card_background"
+            app:mt_placeholderColor="@color/white_and_black"
+            app:mt_searchIconTint="@color/white_and_black"
+            app:mt_searchBarColor="@color/card_background"
+            android:backgroundTint="@color/card_background"
+            android:layout_height="@dimen/_45sdp"/>
 
 
 
