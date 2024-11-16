@@ -214,7 +214,7 @@ class DocsRepositoryImp @Inject constructor(
     }
 
     override fun loadAllFiles(sectionList: ArrayList<SectionsResponseItem>) = flow {
-        val bookmarkList = mutableListOf<Bookmark>() // MutableList ishlatish yaxshiroq
+        val bookmarkList = mutableListOf<Bookmark>()
         for (section in sectionList) {
             val response = makeRequestWithToken(docApi, section.id)
             response.forEach { item ->
@@ -223,16 +223,16 @@ class DocsRepositoryImp @Inject constructor(
                 )
             }
         }
-        emit(bookmarkList) // Natijani bir marta emit qilish
+        emit(bookmarkList)
     }
 
     private suspend fun makeRequestWithToken(docApi: DocApi, sectionId: Int): List<FileItem> {
         var response = docApi.getAllFiles(appReference.token, sectionId)
 
         if (response.code() == 401) {
-            refreshToken()  // Refresh the token if expired
+            refreshToken()
             response =
-                docApi.getAllFiles(appReference.token, sectionId)  // Retry with the new token
+                docApi.getAllFiles(appReference.token, sectionId)
         }
 
         return response.body() ?: emptyList()
